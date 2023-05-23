@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/cable_management/cable_management_be/src/entities"
 	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
+	"time"
 )
 
 const (
@@ -75,7 +76,10 @@ func (af AccountFactory) createSupplier(email, password string) (*entities.Suppl
 
 	passwordHash, _ := af.passwordHashService.Hash(password)
 
-	return entities.NewSupplier(email, passwordHash), nil
+	supplier := entities.NewSupplier(email, passwordHash)
+	supplier.CreatedAt = time.Now()
+
+	return supplier, nil
 }
 
 func (af AccountFactory) createPlanner(email, password string) (*entities.Planner, error) {
@@ -87,7 +91,10 @@ func (af AccountFactory) createPlanner(email, password string) (*entities.Planne
 
 	passwordHash, _ := af.passwordHashService.Hash(password)
 
-	return entities.NewPlanner(email, passwordHash), nil
+	planner := entities.NewPlanner(email, passwordHash)
+	planner.CreatedAt = time.Now()
+
+	return planner, nil
 }
 
 func (af AccountFactory) createContractor(email, password string) (*entities.Contractor, error) {
@@ -99,5 +106,8 @@ func (af AccountFactory) createContractor(email, password string) (*entities.Con
 
 	passwordHash, _ := af.passwordHashService.Hash(password)
 
-	return entities.NewContractor(email, passwordHash), nil
+	contractor := entities.NewContractor(email, passwordHash)
+	contractor.CreatedAt = time.Now()
+
+	return contractor, nil
 }
