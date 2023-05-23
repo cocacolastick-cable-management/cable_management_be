@@ -4,6 +4,7 @@ import "golang.org/x/crypto/bcrypt"
 
 type IPasswordHashService interface {
 	Hash(password string) (string, error)
+	Compare(passwordHash, password string) bool
 }
 
 type PasswordHashService struct {
@@ -19,4 +20,9 @@ func (phs PasswordHashService) Hash(password string) (string, error) {
 		return "", err
 	}
 	return string(hashedPassword), nil
+}
+
+func (phs PasswordHashService) Compare(passwordHash, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
+	return err == nil
 }
