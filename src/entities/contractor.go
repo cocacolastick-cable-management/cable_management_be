@@ -4,8 +4,8 @@ type Contractor struct {
 	AbstractAccount
 }
 
-func NewContractor(email, passwordHash string) *Planner {
-	return &Planner{
+func NewContractor(email, passwordHash string) *Contractor {
+	return &Contractor{
 		AbstractAccount: NewAbstractAccount(email, passwordHash),
 	}
 }
