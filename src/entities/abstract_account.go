@@ -19,11 +19,10 @@ type AbstractAccount struct {
 	Creator *Admin `gorm:"foreignKey:CreatorId"`
 }
 
-func NewAbstractAccount(email, passwordHash string, creatorId uuid.UUID) AbstractAccount {
+func NewAbstractAccount(email, passwordHash string) AbstractAccount {
 	return AbstractAccount{
 		AbstractEntity: NewAbstractEntity(),
 		Email:          email,
 		PasswordHash:   passwordHash,
-		CreatorId:      creatorId,
 	}
 }

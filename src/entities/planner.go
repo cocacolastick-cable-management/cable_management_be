@@ -1,13 +1,11 @@
 package entities
 
-import "github.com/google/uuid"
-
 type Planner struct {
 	AbstractAccount
 }
 
-func NewPlanner(email, passwordHash string, creatorId uuid.UUID) *Planner {
+func NewPlanner(email, passwordHash string) *Planner {
 	return &Planner{
-		AbstractAccount: NewAbstractAccount(email, passwordHash, creatorId),
+		AbstractAccount: NewAbstractAccount(email, passwordHash),
 	}
 }
