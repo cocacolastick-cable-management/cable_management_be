@@ -9,6 +9,6 @@ type AbstractAccount struct {
 	PasswordHash string `gorm:"unique;type:varchar"`
 }
 
-func NewAbstractAccount(email string, passwordHash string) *AbstractAccount {
-	return &AbstractAccount{Email: email, PasswordHash: passwordHash}
+func NewAbstractAccount(email, passwordHash string) AbstractAccount {
+	return AbstractAccount{Email: email, PasswordHash: passwordHash}
 }
