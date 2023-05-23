@@ -7,6 +7,7 @@ import (
 
 type IAdminRepository interface {
 	IBaseRepository[entities.Admin]
+	FindByEmail(email string) (*entities.Admin, error)
 }
 
 type AdminRepository struct {
@@ -20,4 +21,15 @@ func NewAdminRepository(db *gorm.DB) *AdminRepository {
 func (ar AdminRepository) Insert(entity *entities.Admin) error {
 	result := ar.db.Create(entity)
 	return result.Error
+}
+
+func (ar AdminRepository) FindByEmail(email string) (*entities.Admin, error) {
+
+	matchingAdmin := &entities.Admin{}
+	result := ar.db.Find(matchingAdmin, "email = ?", email)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return matchingAdmin, nil
 }
