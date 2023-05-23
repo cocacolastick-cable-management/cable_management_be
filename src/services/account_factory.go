@@ -49,9 +49,9 @@ func (af AccountFactory) CreateNewAccount(role, email, password string) (entitie
 		return af.createPlanner(email, password)
 	case ContractorRole:
 		return af.createContractor(email, password)
+	default:
+		return nil, ErrIncorrectRole
 	}
-
-	return nil, ErrIncorrectRole
 }
 
 func (af AccountFactory) createAdmin(email, password string) (*entities.Admin, error) {
