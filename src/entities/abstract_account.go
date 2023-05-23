@@ -10,5 +10,8 @@ type AbstractAccount struct {
 }
 
 func NewAbstractAccount(email, passwordHash string) AbstractAccount {
-	return AbstractAccount{Email: email, PasswordHash: passwordHash}
+	return AbstractAccount{
+		AbstractEntity: NewAbstractEntity(),
+		Email:          email,
+		PasswordHash:   passwordHash}
 }
