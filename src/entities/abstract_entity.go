@@ -10,3 +10,7 @@ type AbstractEntity struct {
 	InsertedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt  time.Time `gorm:"autoUpdateTime"`
 }
+
+func NewAbstractEntity() AbstractEntity {
+	return AbstractEntity{Id: uuid.New()}
+}
