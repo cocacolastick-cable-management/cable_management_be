@@ -1,5 +1,7 @@
 package entities
 
+type IAbstractAccount interface{}
+
 type AbstractAccount struct {
 	AbstractEntity
 
