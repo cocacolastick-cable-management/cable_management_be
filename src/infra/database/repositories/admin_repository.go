@@ -26,7 +26,7 @@ func (ar AdminRepository) Insert(entity *entities.Admin) error {
 func (ar AdminRepository) FindByEmail(email string) (*entities.Admin, error) {
 
 	matchingAdmin := &entities.Admin{}
-	result := ar.db.Find(matchingAdmin, "email = ?", email)
+	result := ar.db.First(matchingAdmin, "email = ?", email)
 	if result.Error != nil {
 		return nil, result.Error
 	}
