@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+type IAbstractEntity interface{}
+
 type AbstractEntity struct {
 	Id         uuid.UUID `gorm:"primaryKey;type:varchar"`
 	InsertedAt time.Time `gorm:"autoCreateTime"`
