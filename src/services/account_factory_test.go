@@ -104,3 +104,52 @@ func TestAccountFactory_createAdmin(t *testing.T) {
 		})
 	}
 }
+
+func TestAccountFactory_createSupplier(t *testing.T) {
+	type fields struct {
+		passwordHashService IPasswordHashService
+		adminRepo           repositories.IAdminRepository
+		supplierRepo        repositories.ISupplierRepository
+	}
+	type args struct {
+		email    string
+		password string
+	}
+
+	dependencies := fields{
+		passwordHashService: NewPasswordHashService(),
+		adminRepo:           repositories.NewAdminRepository(database.DB),
+		supplierRepo:        repositories.NewSupplierRepository(database.DB),
+	}
+
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+			name:   "case-1",
+			fields: dependencies,
+			args: args{
+				email:    "vupham@gmail.com",
+				password: "123456",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			af := AccountFactory{
+				passwordHashService: tt.fields.passwordHashService,
+				adminRepo:           tt.fields.adminRepo,
+				supplierRepo:        tt.fields.supplierRepo,
+			}
+			_, err := af.createSupplier(tt.args.email, tt.args.password)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("createSupplier() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
