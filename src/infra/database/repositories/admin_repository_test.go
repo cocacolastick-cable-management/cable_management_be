@@ -60,3 +60,55 @@ func TestAdminRepository_Insert(t *testing.T) {
 //		})
 //	}
 //}
+
+func TestAdminRepository_FindByEmail(t *testing.T) {
+	type fields struct {
+		db *gorm.DB
+	}
+	type args struct {
+		email string
+	}
+
+	dependencies := fields{
+		db: database.DB,
+	}
+
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+			name:   "case-1",
+			fields: dependencies,
+			args: args{
+				email: "vupham@gmail.com",
+			},
+			wantErr: false,
+		},
+		{
+			name:   "case-2",
+			fields: dependencies,
+			args: args{
+				email: "vupham2@gmail.com",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ar := AdminRepository{
+				db: tt.fields.db,
+			}
+			_, err := ar.FindByEmail(tt.args.email)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindByEmail() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			//if !reflect.DeepEqual(got, tt.want) {
+			//	t.Errorf("FindByEmail() got = %v, want %v", got, tt.want)
+			//}
+		})
+	}
+}
