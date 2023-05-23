@@ -6,7 +6,7 @@ import (
 )
 
 type IAdminRepository interface {
-	IBaseRepository[entities.Admin]
+	Insert(entity *entities.Admin) error
 	FindByEmail(email string) (*entities.Admin, error)
 }
 
