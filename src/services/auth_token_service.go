@@ -13,7 +13,7 @@ var (
 )
 
 const (
-	AccessTokenExpire  = time.Minute * 2
+	AccessTokenExpire  = time.Hour * 2
 	RefreshTokenExpire = time.Hour * 24 * 30
 )
 
@@ -49,8 +49,8 @@ type AuthTokenClaims struct {
 
 type IAuthTokenService interface {
 	GenerateAuthData(role string, accountId uuid.UUID) (*AuthData, error)
-	IsAccessTokenValid(accessToken string, claims *AuthTokenClaims) bool
-	IsRefreshTokenValid(refreshToken string, claims *AuthTokenClaims) bool
+	IsAccessTokenValid(accessToken string, outClaims *AuthTokenClaims) bool
+	IsRefreshTokenValid(refreshToken string, outClaims *AuthTokenClaims) bool
 	ParseToClaims(tokenStr string) (*AuthTokenClaims, error)
 }
 
@@ -96,16 +96,16 @@ func (ats AuthTokenService) GenerateAuthData(role string, accountId uuid.UUID) (
 	}, nil
 }
 
-func (ats AuthTokenService) IsAccessTokenValid(accessToken string, claims *AuthTokenClaims) bool {
+func (ats AuthTokenService) IsAccessTokenValid(accessToken string, outClaims *AuthTokenClaims) bool {
 
 	var err error
 
-	claims, err = ats.ParseToClaims(accessToken)
+	outClaims, err = ats.ParseToClaims(accessToken)
 	if err != nil {
 		return false
 	}
 
-	tokenType := claims.Type
+	tokenType := outClaims.Type
 	if tokenType != AccessTokenTypeName {
 		return false
 	}
@@ -113,16 +113,16 @@ func (ats AuthTokenService) IsAccessTokenValid(accessToken string, claims *AuthT
 	return true
 }
 
-func (ats AuthTokenService) IsRefreshTokenValid(refreshToken string, claims *AuthTokenClaims) bool {
+func (ats AuthTokenService) IsRefreshTokenValid(refreshToken string, outClaims *AuthTokenClaims) bool {
 
 	var err error
 
-	claims, err = ats.ParseToClaims(refreshToken)
+	outClaims, err = ats.ParseToClaims(refreshToken)
 	if err != nil {
 		return false
 	}
 
-	tokenType := claims.Type
+	tokenType := outClaims.Type
 	if tokenType != RefreshTokenTypeName {
 		return false
 	}
