@@ -14,7 +14,7 @@ var (
 
 func init() {
 
-	dsn := config.Env.DbDsn
+	dsn := config.ENV.DbDsn
 
 	var err error = nil
 

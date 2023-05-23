@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Env env
+	ENV env
 )
 
 type env struct {
@@ -21,5 +21,5 @@ func init() {
 		return
 	}
 
-	Env.DbDsn = os.Getenv("DB_DSN")
+	ENV.DbDsn = os.Getenv("DB_DSN")
 }
