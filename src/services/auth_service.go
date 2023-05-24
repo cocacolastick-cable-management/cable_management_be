@@ -6,7 +6,8 @@ import (
 )
 
 var (
-	ErrAuthFailed = errors.New("authenticate failed")
+	ErrAuthFailed   = errors.New("authenticate failed")
+	ErrUnAuthorized = errors.New("unauthorized")
 )
 
 type IAuthService interface {
