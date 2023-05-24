@@ -1,9 +1,9 @@
 package valider
 
 import (
-	"github.com/cable_management/cable_management_be/src/services"
+	"github.com/cable_management/cable_management_be/src/usecases/adminUsecases"
+	"github.com/cable_management/cable_management_be/src/usecases/commUsecases"
 	"github.com/go-playground/validator/v10"
-	"golang.org/x/exp/slices"
 )
 
 var (
@@ -13,21 +13,18 @@ var (
 func init() {
 	Validator = validator.New()
 
-	err := Validator.RegisterValidation("validateRole", validateRole)
+	err := Validator.RegisterValidation("validateRole", commUsecases.ValidateRole)
 	if err != nil {
 		panic(err)
 	}
-}
 
-func validateRole(fl validator.FieldLevel) bool {
+	err = Validator.RegisterValidation("validateRoleExceptAdmin", adminUsecases.ValidateRoleExceptAdmin)
+	if err != nil {
+		panic(err)
+	}
 
-	roles := []string{
-		services.AdminRole,
-		services.PlannerRole,
-		services.SupplierRole,
-		services.ContractorRole}
-
-	value := fl.Field().Interface().(string)
-
-	return slices.Contains[string](roles, value)
+	err = Validator.RegisterValidation("validatePassword", adminUsecases.ValidatePassword)
+	if err != nil {
+		panic(err)
+	}
 }
