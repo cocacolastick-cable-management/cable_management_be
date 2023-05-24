@@ -26,6 +26,23 @@ type AuthService struct {
 	contractorRepo      repositories.IContractorRepository
 }
 
+func NewAuthService(
+	passwordHashService IPasswordHashService,
+	tokenService IAuthTokenService,
+	adminRepo repositories.IAdminRepository,
+	plannerRepo repositories.IPlannerRepository,
+	supplierRepo repositories.ISupplierRepository,
+	contractorRepo repositories.IContractorRepository) *AuthService {
+
+	return &AuthService{
+		passwordHashService: passwordHashService,
+		tokenService:        tokenService,
+		adminRepo:           adminRepo,
+		plannerRepo:         plannerRepo,
+		supplierRepo:        supplierRepo,
+		contractorRepo:      contractorRepo}
+}
+
 func (as AuthService) Authenticate(role, email, password string) (*AuthData, error) {
 
 	switch role {
