@@ -10,6 +10,7 @@ import (
 
 var (
 	ErrInvalidJwtToken = errors.New("invalid jwt-token")
+	//ErrInvalidRefreshToken = errors.New("invalid refresh token")
 )
 
 const (
@@ -49,8 +50,8 @@ type AuthTokenClaims struct {
 
 type IAuthTokenService interface {
 	GenerateAuthData(role string, accountId uuid.UUID) (*AuthData, error)
-	IsAccessTokenValid(accessToken string, outClaims *AuthTokenClaims) bool
-	IsRefreshTokenValid(refreshToken string, outClaims *AuthTokenClaims) bool
+	IsAccessTokenValid(accessToken string) (bool, *AuthTokenClaims)
+	IsRefreshTokenValid(refreshToken string) (bool, *AuthTokenClaims)
 	ParseToClaims(tokenStr string) (*AuthTokenClaims, error)
 }
 
@@ -96,38 +97,34 @@ func (ats AuthTokenService) GenerateAuthData(role string, accountId uuid.UUID) (
 	}, nil
 }
 
-func (ats AuthTokenService) IsAccessTokenValid(accessToken string, outClaims *AuthTokenClaims) bool {
+func (ats AuthTokenService) IsAccessTokenValid(accessToken string) (bool, *AuthTokenClaims) {
 
-	var err error
-
-	outClaims, err = ats.ParseToClaims(accessToken)
+	claims, err := ats.ParseToClaims(accessToken)
 	if err != nil {
-		return false
+		return false, nil
 	}
 
-	tokenType := outClaims.Type
+	tokenType := claims.Type
 	if tokenType != AccessTokenTypeName {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, claims
 }
 
-func (ats AuthTokenService) IsRefreshTokenValid(refreshToken string, outClaims *AuthTokenClaims) bool {
+func (ats AuthTokenService) IsRefreshTokenValid(refreshToken string) (bool, *AuthTokenClaims) {
 
-	var err error
-
-	outClaims, err = ats.ParseToClaims(refreshToken)
+	claims, err := ats.ParseToClaims(refreshToken)
 	if err != nil {
-		return false
+		return false, nil
 	}
 
-	tokenType := outClaims.Type
+	tokenType := claims.Type
 	if tokenType != RefreshTokenTypeName {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, claims
 }
 
 func (ats AuthTokenService) ParseToClaims(tokenStr string) (*AuthTokenClaims, error) {
