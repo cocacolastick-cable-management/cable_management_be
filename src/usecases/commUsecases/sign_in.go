@@ -13,7 +13,7 @@ type SignInRequestDto struct {
 }
 
 type ISignIn interface {
-	Handle(signInRequest SignInRequestDto) (*services.AuthData, error)
+	Handle(signInRequest *SignInRequestDto) (*services.AuthData, error)
 }
 
 type SignIn struct {
@@ -21,7 +21,7 @@ type SignIn struct {
 	validator   *validator.Validate
 }
 
-func (si SignIn) Handle(signInRequest SignInRequestDto) (*services.AuthData, error) {
+func (si SignIn) Handle(signInRequest *SignInRequestDto) (*services.AuthData, error) {
 
 	var err error
 
