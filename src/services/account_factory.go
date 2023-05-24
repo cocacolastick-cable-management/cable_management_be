@@ -15,8 +15,8 @@ const (
 )
 
 var (
-	ErrIncorrectRole             = errors.New("incorrect role")
-	ErrDuplicatedAdminEmail      = errors.New("duplicated admin email")
+	ErrIncorrectRole = errors.New("incorrect role")
+	//ErrDuplicatedAdminEmail      = errors.New("duplicated admin email")
 	ErrDuplicatedSupplierEmail   = errors.New("duplicated supplier email")
 	ErrDuplicatedPlannerEmail    = errors.New("duplicated planner email")
 	ErrDuplicatedContractorEmail = errors.New("duplicated contractor email")
@@ -24,7 +24,7 @@ var (
 
 type IAccountFactory interface {
 	CreateNewAccount(role, email, password string) (entities.IAbstractAccount, error)
-	createAdmin(email, password string) (*entities.Admin, error)
+	//createAdmin(email, password string) (*entities.Admin, error)
 	createSupplier(email, password string) (*entities.Supplier, error)
 	createPlanner(email, password string) (*entities.Planner, error)
 	createContractor(email, password string) (*entities.Contractor, error)
@@ -38,12 +38,25 @@ type AccountFactory struct {
 	contractorRepo      repositories.IContractorRepository
 }
 
+func NewAccountFactory(
+	passwordHashService IPasswordHashService,
+	supplierRepo repositories.ISupplierRepository,
+	plannerRepo repositories.IPlannerRepository,
+	contractorRepo repositories.IContractorRepository) *AccountFactory {
+
+	return &AccountFactory{
+		passwordHashService: passwordHashService,
+		supplierRepo:        supplierRepo,
+		plannerRepo:         plannerRepo,
+		contractorRepo:      contractorRepo}
+}
+
 func (af AccountFactory) CreateNewAccount(role, email, password string) (entities.IAbstractAccount, error) {
 
 	switch role {
 	// TODO should I remove AdminRole on production ???
-	case AdminRole:
-		return af.createAdmin(email, password)
+	//case AdminRole:
+	//return af.createAdmin(email, password)
 	case SupplierRole:
 		return af.createSupplier(email, password)
 	case PlannerRole:
@@ -55,17 +68,17 @@ func (af AccountFactory) CreateNewAccount(role, email, password string) (entitie
 	}
 }
 
-func (af AccountFactory) createAdmin(email, password string) (*entities.Admin, error) {
-
-	matchingAdmin, _ := af.adminRepo.FindByEmail(email)
-	if matchingAdmin != nil {
-		return nil, ErrDuplicatedAdminEmail
-	}
-
-	passwordHash, _ := af.passwordHashService.Hash(password)
-
-	return entities.NewAdmin(email, passwordHash), nil
-}
+//func (af AccountFactory) createAdmin(email, password string) (*entities.Admin, error) {
+//
+//	matchingAdmin, _ := af.adminRepo.FindByEmail(email)
+//	if matchingAdmin != nil {
+//		return nil, ErrDuplicatedAdminEmail
+//	}
+//
+//	passwordHash, _ := af.passwordHashService.Hash(password)
+//
+//	return entities.NewAdmin(email, passwordHash), nil
+//}
 
 func (af AccountFactory) createSupplier(email, password string) (*entities.Supplier, error) {
 
