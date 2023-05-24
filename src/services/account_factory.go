@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/cable_management/cable_management_be/src/entities"
 	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -23,11 +24,11 @@ var (
 )
 
 type IAccountFactory interface {
-	CreateNewAccount(role, email, password string) (entities.IAbstractAccount, error)
+	CreateNewAccount(role, email, password string, creatorId uuid.UUID) (entities.IAbstractAccount, error)
 	//createAdmin(email, password string) (*entities.Admin, error)
-	createSupplier(email, password string) (*entities.Supplier, error)
-	createPlanner(email, password string) (*entities.Planner, error)
-	createContractor(email, password string) (*entities.Contractor, error)
+	createSupplier(email, password string, creatorId uuid.UUID) (*entities.Supplier, error)
+	createPlanner(email, password string, creatorId uuid.UUID) (*entities.Planner, error)
+	createContractor(email, password string, creatorId uuid.UUID) (*entities.Contractor, error)
 }
 
 type AccountFactory struct {
@@ -51,36 +52,21 @@ func NewAccountFactory(
 		contractorRepo:      contractorRepo}
 }
 
-func (af AccountFactory) CreateNewAccount(role, email, password string) (entities.IAbstractAccount, error) {
+func (af AccountFactory) CreateNewAccount(role, email, password string, creatorId uuid.UUID) (entities.IAbstractAccount, error) {
 
 	switch role {
-	// TODO should I remove AdminRole on production ???
-	//case AdminRole:
-	//return af.createAdmin(email, password)
 	case SupplierRole:
-		return af.createSupplier(email, password)
+		return af.createSupplier(email, password, creatorId)
 	case PlannerRole:
-		return af.createPlanner(email, password)
+		return af.createPlanner(email, password, creatorId)
 	case ContractorRole:
-		return af.createContractor(email, password)
+		return af.createContractor(email, password, creatorId)
 	default:
 		return nil, ErrIncorrectRole
 	}
 }
 
-//func (af AccountFactory) createAdmin(email, password string) (*entities.Admin, error) {
-//
-//	matchingAdmin, _ := af.adminRepo.FindByEmail(email)
-//	if matchingAdmin != nil {
-//		return nil, ErrDuplicatedAdminEmail
-//	}
-//
-//	passwordHash, _ := af.passwordHashService.Hash(password)
-//
-//	return entities.NewAdmin(email, passwordHash), nil
-//}
-
-func (af AccountFactory) createSupplier(email, password string) (*entities.Supplier, error) {
+func (af AccountFactory) createSupplier(email, password string, creatorId uuid.UUID) (*entities.Supplier, error) {
 
 	matchingSupplier, _ := af.supplierRepo.FindByEmail(email)
 	if matchingSupplier != nil {
@@ -91,11 +77,12 @@ func (af AccountFactory) createSupplier(email, password string) (*entities.Suppl
 
 	supplier := entities.NewSupplier(email, passwordHash)
 	supplier.CreatedAt = time.Now()
+	supplier.CreatorId = creatorId
 
 	return supplier, nil
 }
 
-func (af AccountFactory) createPlanner(email, password string) (*entities.Planner, error) {
+func (af AccountFactory) createPlanner(email, password string, creatorId uuid.UUID) (*entities.Planner, error) {
 
 	matchingPlanner, _ := af.plannerRepo.FindByEmail(email)
 	if matchingPlanner != nil {
@@ -106,13 +93,14 @@ func (af AccountFactory) createPlanner(email, password string) (*entities.Planne
 
 	planner := entities.NewPlanner(email, passwordHash)
 	planner.CreatedAt = time.Now()
+	planner.CreatorId = creatorId
 
 	return planner, nil
 }
 
-func (af AccountFactory) createContractor(email, password string) (*entities.Contractor, error) {
+func (af AccountFactory) createContractor(email, password string, creatorId uuid.UUID) (*entities.Contractor, error) {
 
-	matchingContractor, _ := af.plannerRepo.FindByEmail(email)
+	matchingContractor, _ := af.contractorRepo.FindByEmail(email)
 	if matchingContractor != nil {
 		return nil, ErrDuplicatedContractorEmail
 	}
@@ -121,6 +109,7 @@ func (af AccountFactory) createContractor(email, password string) (*entities.Con
 
 	contractor := entities.NewContractor(email, passwordHash)
 	contractor.CreatedAt = time.Now()
+	contractor.CreatorId = creatorId
 
 	return contractor, nil
 }
