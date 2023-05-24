@@ -36,14 +36,26 @@ type CreateAccount struct {
 	tokenService   services.IAuthTokenService
 }
 
-func NewCreateAccount(validator *validator.Validate, accountFac services.IAccountFactory, supplierRepo repositories.ISupplierRepository, plannerRepo repositories.IPlannerRepository, contractorRepo repositories.IContractorRepository, tokenService services.IAuthTokenService) *CreateAccount {
-	return &CreateAccount{validator: validator, accountFac: accountFac, supplierRepo: supplierRepo, plannerRepo: plannerRepo, contractorRepo: contractorRepo, tokenService: tokenService}
+func NewCreateAccount(
+	validator *validator.Validate,
+	accountFac services.IAccountFactory,
+	supplierRepo repositories.ISupplierRepository,
+	plannerRepo repositories.IPlannerRepository,
+	contractorRepo repositories.IContractorRepository,
+	tokenService services.IAuthTokenService) *CreateAccount {
+
+	return &CreateAccount{
+		validator:      validator,
+		accountFac:     accountFac,
+		supplierRepo:   supplierRepo,
+		plannerRepo:    plannerRepo,
+		contractorRepo: contractorRepo,
+		tokenService:   tokenService}
 }
 
 func (ca CreateAccount) Handle(accessToken string, createRequest *CreateAccountRequestDto) (*CreateAccountResponseDto, error) {
 
 	isValid, claims := ca.tokenService.IsAccessTokenValid(accessToken)
-
 	if !isValid || claims.Role != services.AdminRole {
 		return nil, services.ErrUnAuthorized
 	}
@@ -61,6 +73,7 @@ func (ca CreateAccount) Handle(accessToken string, createRequest *CreateAccountR
 
 	response := &CreateAccountResponseDto{}
 
+	// TODO this code look dirty
 	switch createRequest.Role {
 	case services.PlannerRole:
 		planner := account.(*entities.Planner)
