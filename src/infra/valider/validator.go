@@ -27,4 +27,9 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	Validator.RegisterStructValidation(adminUsecases.ValidateCreateAccountRequest, adminUsecases.CreateAccountRequestDto{})
+	if err != nil {
+		panic(err)
+	}
 }
