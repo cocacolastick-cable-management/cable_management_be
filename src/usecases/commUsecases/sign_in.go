@@ -21,6 +21,10 @@ type SignIn struct {
 	validator   *validator.Validate
 }
 
+func NewSignIn(authService services.IAuthService, validator *validator.Validate) *SignIn {
+	return &SignIn{authService: authService, validator: validator}
+}
+
 func (si SignIn) Handle(signInRequest *SignInRequestDto) (*services.AuthData, error) {
 
 	var err error
