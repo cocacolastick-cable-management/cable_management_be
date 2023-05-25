@@ -65,39 +65,19 @@ func (ca CreateAccount) Handle(accessToken string, createRequest *CreateAccountR
 		return nil, err
 	}
 
-	account, _ := ca.accountFac.CreateNewAccount(
-		createRequest.Role,
-		createRequest.Email,
-		createRequest.Password,
-		claims.AccountId)
+	account, _ := ca.accountFac.CreateNewAccount(createRequest.Role, createRequest.Email, createRequest.Password, claims.AccountId)
 
-	response := &CreateAccountResponseDto{}
-
-	// TODO this code look dirty
-	switch createRequest.Role {
-	case services.PlannerRole:
-		planner := account.(*entities.Planner)
-		response.Role = createRequest.Role
-		response.Email = planner.Email
-		response.CreatedAt = planner.CreatedAt
-		err = ca.plannerRepo.Insert(planner)
-	case services.SupplierRole:
-		supplier := account.(*entities.Supplier)
-		response.Role = createRequest.Role
-		response.Email = supplier.Email
-		response.CreatedAt = supplier.CreatedAt
-		err = ca.supplierRepo.Insert(supplier)
-	case services.ContractorRole:
-		contractor := account.(*entities.Contractor)
-		response.Role = createRequest.Role
-		response.Email = contractor.Email
-		response.CreatedAt = contractor.CreatedAt
-		err = ca.contractorRepo.Insert(contractor)
+	switch entity := account.(type) {
+	case *entities.Planner:
+		_ = ca.plannerRepo.Insert(entity)
+	case *entities.Supplier:
+		_ = ca.supplierRepo.Insert(entity)
+	case *entities.Contractor:
+		_ = ca.contractorRepo.Insert(entity)
 	}
 
-	if err != nil {
-		panic(err)
-	}
+	absAccount := account.(entities.AbstractAccount)
+	response := &CreateAccountResponseDto{createRequest.Role, absAccount.Email, absAccount.CreatedAt}
 
 	return response, nil
 }
