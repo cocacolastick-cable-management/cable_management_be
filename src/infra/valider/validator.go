@@ -1,8 +1,8 @@
 package valider
 
 import (
-	"github.com/cable_management/cable_management_be/src/usecase/dtos/requests"
-	"github.com/cable_management/cable_management_be/src/usecase/validations"
+	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/features/validations"
 	"github.com/go-playground/validator/v10"
 )
 

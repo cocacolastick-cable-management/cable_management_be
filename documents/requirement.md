@@ -11,7 +11,7 @@ There is an initiative to build the web portal which will be able to help variou
 # Use cases
 1. As the System Admin,
    I want to manage the account for users with various roles (Planner Team, Supply Vendor Team and Project Contractor Team)
-   So that the users can login and carry out necessary actions according to their role
+   So that the users can log in and carry out necessary actions according to their role
    (Assumption: System Admin account is pre-created in DB and cannot be modified, there is no need to do verification during account creation for other users)
 
 
