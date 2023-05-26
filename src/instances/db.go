@@ -2,7 +2,7 @@ package instances
 
 import (
 	"github.com/cable_management/cable_management_be/config"
-	"github.com/cable_management/cable_management_be/src_test/entities"
+	"github.com/cable_management/cable_management_be/src/entities"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	
+
 	dsn := config.ENV.DbDsn
 
 	var err error = nil
@@ -23,7 +23,7 @@ func init() {
 		return
 	}
 
-	err = DB.AutoMigrate(&entities.Admin{}, &entities.Supplier{}, &entities.Planner{}, &entities.Contractor{})
+	err = DB.AutoMigrate(&entities.User{})
 	if err != nil {
 		panic(err)
 		return
