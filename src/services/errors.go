@@ -7,6 +7,7 @@ var (
 
 	ErrAuthFailed = errors.New("authenticate failed")
 
-	ErrInvalidJwtToken = errors.New("invalid jwt-token")
-	ErrInvalidRole     = errors.New("invalid role")
+	ErrInvalidJwtToken       = errors.New("invalid jwt-token")
+	ErrInvalidRole           = errors.New("invalid role")
+	ErrInvalidPasswordFormat = errors.New("invalid Password format")
 )
