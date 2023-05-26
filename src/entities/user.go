@@ -7,9 +7,9 @@ import (
 type User struct {
 	AbstractEntity
 
-	Email        string `gorm:"unique;type:varchar"`
-	PasswordHash string `gorm:"unique;type:varchar"`
-	Role         string `gorm:"type:varchar"`
+	Email        string `gorm:"uniqueIndex:uni_user;type:varchar"`
+	PasswordHash string `gorm:"type:varchar"`
+	Role         string `gorm:"uniqueIndex:uni_user;type:varchar"`
 	CreatedAt    time.Time
 }
 

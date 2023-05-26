@@ -1,0 +1,16 @@
+package valider
+
+import (
+	"github.com/cable_management/cable_management_be/src/usecases/_commons/requests"
+	"github.com/go-playground/validator/v10"
+)
+
+var (
+	Validator *validator.Validate
+)
+
+func init() {
+	Validator = validator.New()
+
+	Validator.RegisterStructValidation(requests.ValidateCreateUserRequest, requests.CreateUserRequest{})
+}

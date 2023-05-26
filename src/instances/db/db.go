@@ -1,4 +1,4 @@
-package instances
+package db
 
 import (
 	"github.com/cable_management/cable_management_be/config"

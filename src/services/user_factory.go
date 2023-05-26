@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/cable_management/cable_management_be/src/entities"
+	"github.com/cable_management/cable_management_be/src/errs"
 	"github.com/cable_management/cable_management_be/src/infras/repositories"
-	"github.com/cable_management/cable_management_be/src/services/_commons"
 	"github.com/cable_management/cable_management_be/src/validations"
 	"time"
 )
@@ -24,16 +24,16 @@ func NewUserFactory(userRepo repositories.IUserRepository, hashService IPassword
 func (uf UserFactory) CreateUser(role, email, password string) (*entities.User, error) {
 
 	if !validations.ValidateRole(role) {
-		return nil, _commons.ErrInvalidRole
+		return nil, errs.ErrInvalidRole
 	}
 
 	if !validations.ValidatePassword(password) {
-		return nil, _commons.ErrInvalidPasswordFormat
+		return nil, errs.ErrInvalidPasswordFormat
 	}
 
 	matchingUser, _ := uf.userRepo.FindByEmail(email)
 	if matchingUser != nil {
-		return nil, _commons.ErrDuplicatedEmail
+		return nil, errs.ErrDuplicatedEmail
 	}
 
 	passwordHash, _ := uf.hashService.Hash(password)

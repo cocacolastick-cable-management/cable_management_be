@@ -1,6 +1,8 @@
-package _commons
+package responses
 
-import "time"
+import (
+	"time"
+)
 
 type UserResponse struct {
 	Role      string

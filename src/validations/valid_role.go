@@ -1,17 +1,17 @@
 package validations
 
 import (
-	"github.com/cable_management/cable_management_be/src/services/_commons"
+	"github.com/cable_management/cable_management_be/src/constants"
 	"golang.org/x/exp/slices"
 )
 
 func ValidateRole(role string) bool {
 
 	roles := []string{
-		_commons.AdminRole,
-		_commons.PlannerRole,
-		_commons.SupplierRole,
-		_commons.ContractorRole}
+		constants.AdminRole,
+		constants.PlannerRole,
+		constants.SupplierRole,
+		constants.ContractorRole}
 
 	return slices.Contains[string](roles, role)
 }
