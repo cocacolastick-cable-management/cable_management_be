@@ -5,6 +5,8 @@ type Admin struct {
 
 	Email        string `gorm:"unique;type:varchar"`
 	PasswordHash string `gorm:"unique;type:varchar"`
+
+	Users []User `gorm:"foreignKey:CreatorId"`
 }
 
 func NewAdmin(email string, passwordHash string) *Admin {
