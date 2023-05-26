@@ -1,9 +1,9 @@
 package admin_usecases
 
 import (
+	"github.com/cable_management/cable_management_be/infras/db/repositories"
 	"github.com/cable_management/cable_management_be/src/constants"
 	"github.com/cable_management/cable_management_be/src/errs"
-	"github.com/cable_management/cable_management_be/src/infras/repositories"
 	"github.com/cable_management/cable_management_be/src/services"
 	"github.com/cable_management/cable_management_be/src/usecases/_commons/requests"
 	"github.com/cable_management/cable_management_be/src/usecases/_commons/responses"

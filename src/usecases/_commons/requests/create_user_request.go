@@ -1,8 +1,8 @@
 package requests
 
 import (
-	"github.com/cable_management/cable_management_be/src/infras/repositories"
-	"github.com/cable_management/cable_management_be/src/instances/db"
+	"github.com/cable_management/cable_management_be/infras/db"
+	"github.com/cable_management/cable_management_be/infras/db/repositories"
 	"github.com/cable_management/cable_management_be/src/validations"
 	"github.com/go-playground/validator/v10"
 )

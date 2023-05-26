@@ -1,10 +1,10 @@
 package common_usecases
 
 import (
+	"github.com/cable_management/cable_management_be/infras/db"
+	"github.com/cable_management/cable_management_be/infras/db/repositories"
+	"github.com/cable_management/cable_management_be/infras/valider"
 	"github.com/cable_management/cable_management_be/src/constants"
-	"github.com/cable_management/cable_management_be/src/infras/repositories"
-	"github.com/cable_management/cable_management_be/src/instances/db"
-	"github.com/cable_management/cable_management_be/src/instances/valider"
 	"github.com/cable_management/cable_management_be/src/services"
 	"github.com/go-playground/validator/v10"
 	"reflect"

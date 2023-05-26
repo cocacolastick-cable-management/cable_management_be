@@ -1,9 +1,9 @@
 package services
 
 import (
+	"github.com/cable_management/cable_management_be/infras/db/repositories"
 	"github.com/cable_management/cable_management_be/src/entities"
 	"github.com/cable_management/cable_management_be/src/errs"
-	"github.com/cable_management/cable_management_be/src/infras/repositories"
 	"github.com/cable_management/cable_management_be/src/validations"
 	"time"
 )
