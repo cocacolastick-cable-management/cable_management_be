@@ -44,5 +44,10 @@ func (cac CreateUserCase) Handle(accessToken string, request *requests.CreateUse
 	newUser, _ := cac.userFac.CreateUser(request.Role, request.Email, request.Password)
 	_ = cac.userRepo.Insert(newUser)
 
-	return nil, nil
+	return &responses.UserResponse{
+		Id:        newUser.Id,
+		Role:      newUser.Role,
+		Email:     newUser.Email,
+		CreatedAt: newUser.CreatedAt,
+	}, nil
 }
