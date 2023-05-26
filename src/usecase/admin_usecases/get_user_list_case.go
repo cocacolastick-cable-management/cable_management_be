@@ -1,12 +1,12 @@
 package admin_usecases
 
 import (
-	"github.com/cable_management/cable_management_be/infras/db/repositories"
-	"github.com/cable_management/cable_management_be/src/constants"
-	"github.com/cable_management/cable_management_be/src/dtos/requests"
-	"github.com/cable_management/cable_management_be/src/dtos/responses"
-	"github.com/cable_management/cable_management_be/src/errs"
-	"github.com/cable_management/cable_management_be/src/services"
+	"github.com/cable_management/cable_management_be/src/domain/constants"
+	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
+	"github.com/cable_management/cable_management_be/src/domain/errs"
+	"github.com/cable_management/cable_management_be/src/domain/services"
+	"github.com/cable_management/cable_management_be/src/usecase/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/usecase/dtos/responses"
 	"github.com/go-playground/validator/v10"
 )
 

@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/cable_management/cable_management_be/config"
-	"github.com/cable_management/cable_management_be/src/entities"
+	"github.com/cable_management/cable_management_be/src/domain/entities"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

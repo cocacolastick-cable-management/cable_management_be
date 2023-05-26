@@ -1,7 +1,7 @@
 package common_usecases
 
 import (
-	"github.com/cable_management/cable_management_be/src/services"
+	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/go-playground/validator/v10"
 )
 

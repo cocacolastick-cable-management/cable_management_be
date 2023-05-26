@@ -1,7 +1,7 @@
 package validations
 
 import (
-	"github.com/cable_management/cable_management_be/src/constants"
+	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"golang.org/x/exp/slices"
 )
 
