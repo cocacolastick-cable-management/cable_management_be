@@ -29,3 +29,20 @@ func init() {
 		return
 	}
 }
+
+func Init(dsn string) {
+
+	var err error = nil
+
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	err = DB.AutoMigrate(&entities.User{})
+	if err != nil {
+		panic(err)
+		return
+	}
+}
