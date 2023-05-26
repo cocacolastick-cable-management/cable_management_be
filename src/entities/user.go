@@ -1,8 +1,14 @@
 package entities
 
 import (
-	"github.com/google/uuid"
 	"time"
+)
+
+const (
+	AdminRole      = "admin"
+	PlanerRole     = "planer"
+	SupplierRole   = "supplier"
+	ContractorRole = "contractor"
 )
 
 type User struct {
@@ -10,13 +16,10 @@ type User struct {
 
 	Email        string `gorm:"unique;type:varchar"`
 	PasswordHash string `gorm:"unique;type:varchar"`
+	Role         string `gorm:"type:varchar"`
 	CreatedAt    time.Time
-
-	CreatorId uuid.UUID `gorm:"type:varchar"`
-
-	Creator *Admin `gorm:"foreignKey:CreatorId"`
 }
 
-func NewUser(email string, passwordHash string, createdAt time.Time) *User {
-	return &User{AbstractEntity: NewAbstractEntity(), Email: email, PasswordHash: passwordHash, CreatedAt: createdAt}
+func NewUser(role, email, passwordHash string, createdAt time.Time) *User {
+	return &User{AbstractEntity: NewAbstractEntity(), Role: role, Email: email, PasswordHash: passwordHash, CreatedAt: createdAt}
 }
