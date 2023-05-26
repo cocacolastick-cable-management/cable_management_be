@@ -1,15 +1,10 @@
 package services
 
 import (
-	"errors"
 	"github.com/cable_management/cable_management_be/config"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"time"
-)
-
-var (
-	ErrInvalidJwtToken = errors.New("invalid jwt-token")
 )
 
 const (

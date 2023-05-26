@@ -4,13 +4,6 @@ import (
 	"time"
 )
 
-const (
-	AdminRole      = "admin"
-	PlanerRole     = "planer"
-	SupplierRole   = "supplier"
-	ContractorRole = "contractor"
-)
-
 type User struct {
 	AbstractEntity
 

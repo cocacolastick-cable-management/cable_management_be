@@ -1,12 +1,7 @@
 package services
 
 import (
-	"errors"
 	"github.com/cable_management/cable_management_be/src/infras/repositories"
-)
-
-var (
-	ErrAuthFailed = errors.New("authenticate failed")
 )
 
 // $2a$10$pQpD2YRD49hiR7as3UkZQOpuITpdepw9mGwLvw/8MHZF3eYTsNI2a

@@ -1,18 +1,14 @@
 package services
 
 import (
-	"errors"
 	"github.com/cable_management/cable_management_be/src/entities"
 	"github.com/cable_management/cable_management_be/src/infras/repositories"
+	"github.com/cable_management/cable_management_be/src/validations"
 	"time"
 )
 
-var (
-	ErrDuplicatedEmail = errors.New("email is already in use")
-)
-
 type IUserFactory interface {
-	CreateUser(email, password string) (*entities.User, error)
+	CreateUser(role, email, password string) (*entities.User, error)
 }
 
 type UserFactory struct {
@@ -24,7 +20,11 @@ func NewUserFactory(userRepo repositories.IUserRepository, hashService IPassword
 	return &UserFactory{userRepo: userRepo, hashService: hashService}
 }
 
-func (uf UserFactory) CreateUser(email, password string) (*entities.User, error) {
+func (uf UserFactory) CreateUser(role, email, password string) (*entities.User, error) {
+
+	if !validations.ValidateRole(role) {
+		return nil, ErrInvalidRole
+	}
 
 	matchingUser, _ := uf.userRepo.FindByEmail(email)
 	if matchingUser != nil {
@@ -33,5 +33,5 @@ func (uf UserFactory) CreateUser(email, password string) (*entities.User, error)
 
 	passwordHash, _ := uf.hashService.Hash(password)
 
-	return entities.NewUser(email, passwordHash, time.Now()), nil
+	return entities.NewUser(role, email, passwordHash, time.Now()), nil
 }
