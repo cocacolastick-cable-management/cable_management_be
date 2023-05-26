@@ -11,7 +11,7 @@ import (
 )
 
 type ICreateUserCase interface {
-	Handle(accessToken string, request *requests.CreateUserRequest) (*responses.UserResponse, error)
+	Handle(accessToken string, request requests.CreateUserRequest) (*responses.UserResponse, error)
 }
 
 type CreateUserCase struct {
@@ -25,7 +25,7 @@ func NewCreateUserCase(tokenService services.IAuthTokenService, userFac services
 	return &CreateUserCase{tokenService: tokenService, userFac: userFac, userRepo: userRepo, validator: validator}
 }
 
-func (cac CreateUserCase) Handle(accessToken string, request *requests.CreateUserRequest) (*responses.UserResponse, error) {
+func (cac CreateUserCase) Handle(accessToken string, request requests.CreateUserRequest) (*responses.UserResponse, error) {
 
 	isTokenValid, claims := cac.tokenService.IsAccessTokenValid(accessToken)
 	if !isTokenValid {

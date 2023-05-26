@@ -12,7 +12,7 @@ type SignInRequest struct {
 }
 
 type ISignInCase interface {
-	Handle(request *SignInRequest) (*services.AuthData, error)
+	Handle(request SignInRequest) (*services.AuthData, error)
 }
 
 type SignInCase struct {
@@ -20,7 +20,7 @@ type SignInCase struct {
 	validator   *validator.Validate
 }
 
-func (sic SignInCase) Handle(request *SignInRequest) (*services.AuthData, error) {
+func (sic SignInCase) Handle(request SignInRequest) (*services.AuthData, error) {
 
 	err := sic.validator.Struct(request)
 	if err != nil {

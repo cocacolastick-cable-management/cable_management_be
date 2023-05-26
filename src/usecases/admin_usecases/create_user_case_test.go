@@ -22,7 +22,7 @@ func TestCreateUserCase_Handle(t *testing.T) {
 	}
 	type args struct {
 		accessToken string
-		request     *requests.CreateUserRequest
+		request     requests.CreateUserRequest
 	}
 
 	userRepo := repositories.NewUserRepository(db.DB)
@@ -45,7 +45,7 @@ func TestCreateUserCase_Handle(t *testing.T) {
 			fields: dependencies,
 			args: args{
 				accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODUwOTc3MzgsIlJvbGUiOiJhZG1pbiIsIlR5cGUiOiJhY2Nlc3MtdG9rZW4iLCJBY2NvdW50SWQiOiIwNjVjYTNlZi1iNWVkLTQ0YTctYTRjMC05MTc3MDc2Yjk2NDcifQ.1U9sYm4k5MBWun-CtExfsoe9J1WwjmN47MIA3l-f6TM",
-				request: &requests.CreateUserRequest{
+				request: requests.CreateUserRequest{
 					Role:     constants.PlannerRole,
 					Email:    "vupham@gmail.com",
 					Password: "123456Vv",
