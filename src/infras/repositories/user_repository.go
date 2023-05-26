@@ -6,6 +6,7 @@ import (
 )
 
 type IUserRepository interface {
+	Insert(user *entities.User) error
 	FindByEmail(email string) (*entities.User, error)
 	FindByEmailAndRole(email, role string) (*entities.User, error)
 }
@@ -38,4 +39,9 @@ func (ur UserRepository) FindByEmailAndRole(email, role string) (*entities.User,
 	}
 
 	return matchingUser, nil
+}
+
+func (ur UserRepository) Insert(user *entities.User) error {
+	result := ur.db.Create(user)
+	return result.Error
 }
