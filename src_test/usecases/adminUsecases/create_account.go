@@ -1,10 +1,10 @@
 package adminUsecases
 
 import (
-	"github.com/cable_management/cable_management_be/src/entities"
-	"github.com/cable_management/cable_management_be/src/infra/database"
-	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
-	"github.com/cable_management/cable_management_be/src/services"
+	"github.com/cable_management/cable_management_be/src_test/entities"
+	"github.com/cable_management/cable_management_be/src_test/infra/database"
+	"github.com/cable_management/cable_management_be/src_test/infra/database/repositories"
+	"github.com/cable_management/cable_management_be/src_test/services"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/exp/slices"
 	"regexp"

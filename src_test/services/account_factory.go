@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
-	"github.com/cable_management/cable_management_be/src/entities"
-	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
+	"github.com/cable_management/cable_management_be/src_test/entities"
+	"github.com/cable_management/cable_management_be/src_test/infra/database/repositories"
 	"github.com/google/uuid"
 	"time"
 )

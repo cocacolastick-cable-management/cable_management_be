@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/cable_management/cable_management_be/src/infra/database"
-	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
+	"github.com/cable_management/cable_management_be/src_test/infra/database"
+	"github.com/cable_management/cable_management_be/src_test/infra/database/repositories"
 	"reflect"
 	"testing"
 )

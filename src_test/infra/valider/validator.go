@@ -1,8 +1,8 @@
 package valider
 
 import (
-	"github.com/cable_management/cable_management_be/src/usecases/adminUsecases"
-	"github.com/cable_management/cable_management_be/src/usecases/commUsecases"
+	"github.com/cable_management/cable_management_be/src_test/usecases/adminUsecases"
+	"github.com/cable_management/cable_management_be/src_test/usecases/commUsecases"
 	"github.com/go-playground/validator/v10"
 )
 

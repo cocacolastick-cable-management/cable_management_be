@@ -1,6 +1,6 @@
 package commUsecases
 
-import "github.com/cable_management/cable_management_be/src/services"
+import "github.com/cable_management/cable_management_be/src_test/services"
 
 type IRefreshToken interface {
 	Handle(refreshToken string) (*services.AuthData, error)

@@ -1,7 +1,7 @@
 package commUsecases
 
 import (
-	"github.com/cable_management/cable_management_be/src/services"
+	"github.com/cable_management/cable_management_be/src_test/services"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/exp/slices"
 )

@@ -2,7 +2,7 @@ package services
 
 import (
 	"errors"
-	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
+	"github.com/cable_management/cable_management_be/src_test/infra/database/repositories"
 )
 
 var (

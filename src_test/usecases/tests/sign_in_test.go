@@ -1,11 +1,11 @@
 package tests
 
 import (
-	"github.com/cable_management/cable_management_be/src/infra/database"
-	"github.com/cable_management/cable_management_be/src/infra/database/repositories"
-	"github.com/cable_management/cable_management_be/src/infra/valider"
-	"github.com/cable_management/cable_management_be/src/services"
-	"github.com/cable_management/cable_management_be/src/usecases/commUsecases"
+	"github.com/cable_management/cable_management_be/src_test/infra/database"
+	"github.com/cable_management/cable_management_be/src_test/infra/database/repositories"
+	"github.com/cable_management/cable_management_be/src_test/infra/valider"
+	"github.com/cable_management/cable_management_be/src_test/services"
+	"github.com/cable_management/cable_management_be/src_test/usecases/commUsecases"
 	"github.com/go-playground/validator/v10"
 	"reflect"
 	"testing"
