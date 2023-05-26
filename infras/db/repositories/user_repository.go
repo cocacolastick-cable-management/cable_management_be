@@ -3,12 +3,14 @@ package repositories
 import (
 	"github.com/cable_management/cable_management_be/src/entities"
 	"gorm.io/gorm"
+	"time"
 )
 
 type IUserRepository interface {
 	Insert(user *entities.User) error
 	FindByEmail(email string) (*entities.User, error)
 	FindByEmailAndRole(email, role string) (*entities.User, error)
+	GetList(page uint, size uint, lastTimestamp *time.Time) ([]*entities.User, error)
 }
 
 type UserRepository struct {
@@ -28,6 +30,13 @@ func (ur UserRepository) FindByEmail(email string) (*entities.User, error) {
 	}
 
 	return matchingUser, nil
+}
+
+func (ur UserRepository) GetList(page uint, size uint, lastTimestamp *time.Time) ([]*entities.User, error) {
+
+	userList := make([]*entities.User, size)
+	ur.db.Offset(int((page - 1) * size)).Limit(int(size)).Find(&userList)
+	return userList, nil
 }
 
 func (ur UserRepository) FindByEmailAndRole(email, role string) (*entities.User, error) {
