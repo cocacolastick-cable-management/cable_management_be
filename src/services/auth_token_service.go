@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/cable_management/cable_management_be/config"
+	"github.com/cable_management/cable_management_be/src/services/_commons"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"time"
@@ -121,7 +122,7 @@ func (ats AuthTokenService) ParseToClaims(tokenStr string) (*AuthTokenClaims, er
 	})
 
 	if err != nil || !token.Valid {
-		return nil, ErrInvalidJwtToken
+		return nil, _commons.ErrInvalidJwtToken
 	}
 
 	return claims, nil

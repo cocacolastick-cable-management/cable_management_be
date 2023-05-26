@@ -1,4 +1,4 @@
-package services
+package _commons
 
 const (
 	AdminRole      = "admin"
