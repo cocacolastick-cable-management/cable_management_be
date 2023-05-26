@@ -15,3 +15,16 @@ func init() {
 
 	Validator.RegisterStructValidation(validations.ValidateCreateUserRequest, requests.CreateUserRequest{})
 }
+
+func Init() {
+	Validator = validator.New()
+}
+
+func SetStructValidations(validations []struct {
+	Fn   validator.StructLevelFunc
+	Type any
+}) {
+	for _, validation := range validations {
+		Validator.RegisterStructValidation(validation.Fn, validation.Type)
+	}
+}
