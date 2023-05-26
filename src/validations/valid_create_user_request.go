@@ -1,27 +1,21 @@
-package requests
+package validations
 
 import (
 	"github.com/cable_management/cable_management_be/infras/db"
 	"github.com/cable_management/cable_management_be/infras/db/repositories"
-	"github.com/cable_management/cable_management_be/src/validations"
+	"github.com/cable_management/cable_management_be/src/dtos/requests"
 	"github.com/go-playground/validator/v10"
 )
 
-type CreateUserRequest struct {
-	Role     string
-	Email    string
-	Password string
-}
-
 func ValidateCreateUserRequest(sl validator.StructLevel) {
 
-	request := sl.Current().Interface().(CreateUserRequest)
+	request := sl.Current().Interface().(requests.CreateUserRequest)
 
-	if !validations.ValidateRole(request.Role) {
+	if !ValidateRole(request.Role) {
 		sl.ReportError(request.Role, "role", "Role", "invalid", "invalid role")
 	}
 
-	if !validations.ValidatePassword(request.Password) {
+	if !ValidatePassword(request.Password) {
 		sl.ReportError(request.Password, "password", "Password", "invalid", "invalid password format")
 	}
 
