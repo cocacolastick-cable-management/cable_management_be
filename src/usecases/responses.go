@@ -2,7 +2,7 @@ package usecases
 
 import "time"
 
-type AccountResponse struct {
+type UserResponse struct {
 	Role      string
 	Email     string
 	CreatedAt time.Time
