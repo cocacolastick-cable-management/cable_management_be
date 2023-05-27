@@ -6,6 +6,7 @@ import (
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/features/helpers"
 	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
 	featValidations "github.com/cable_management/cable_management_be/src/features/validations"
@@ -32,11 +33,15 @@ var (
 	AuthService      services.IAuthService
 	UserFac          services.IUserFactory
 
+	//helpers
+	MakeSureAuthorized helpers.IMakeSureAuthorized
+
 	//common_usecases
 	SignInCase common_usecases.ISignInCase
 
 	//admin_usecases
-	CreateUserCase admin_usecases.ICreateUserCase
+	CreateUserCase  admin_usecases.ICreateUserCase
+	GetUserListCase admin_usecases.IGetUserListCase
 
 	//common_controllers
 	AuthController common_controllers.IAuthController
@@ -63,15 +68,19 @@ func init() {
 	AuthService = services.NewAuthService(UserRepo, HashService, AuthTokenService)
 	UserFac = services.NewUserFactory(UserRepo, HashService)
 
+	//helpers
+	MakeSureAuthorized = helpers.NewMakeSureAuthorized(AuthTokenService, UserRepo)
+
 	//common_usecases
 	SignInCase = common_usecases.NewSignInCase(AuthService, Validator)
 
 	//admin_usecases
-	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator)
+	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized)
+	GetUserListCase = admin_usecases.NewGetUserListCase(AuthTokenService, Validator, UserRepo, MakeSureAuthorized)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
-	UserController = admin_controllers.NewUserController(CreateUserCase)
+	UserController = admin_controllers.NewUserController(CreateUserCase, GetUserListCase)
 }
 
 func InitValidator() {
