@@ -4,6 +4,7 @@ import (
 	"github.com/cable_management/cable_management_be/src/app/controllers/admin_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/common_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/planner_controller"
+	"github.com/cable_management/cable_management_be/src/app/middlewares"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
@@ -57,6 +58,9 @@ var (
 
 	//planner_controller
 	ContractController planner_controller.IContractController
+
+	//middleware
+	AuthorizedMiddleware middlewares.IAuthorizedMiddleware
 )
 
 func init() {
@@ -99,6 +103,9 @@ func init() {
 
 	//planner_controllers
 	ContractController = planner_controller.NewContractController(GetContractListCase)
+
+	//middleware
+	AuthorizedMiddleware = middlewares.NewAuthorizeMiddleware(AuthTokenService)
 }
 
 func InitValidator() {

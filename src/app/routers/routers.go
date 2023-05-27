@@ -20,10 +20,7 @@ func MountApiRouters(app *fiber.App) {
 		middlewares.GlobalErrorHandleMiddleware)
 
 	// admin
-	admin := api.Group("/admin",
-		middlewares.AuthorizeMiddleware(
-			middlewares.AuthorizeMiddlewareDependency{AuthTokenService: initalizers.AuthTokenService},
-			constants.AdminRole))
+	admin := api.Group("/admin", initalizers.AuthorizedMiddleware.Handle(constants.AdminRole))
 
 	admin.Post("/users",
 		middlewares.BodyParserMiddleware[requests.CreateUserRequest],
@@ -36,10 +33,7 @@ func MountApiRouters(app *fiber.App) {
 	admin.Use(middlewares.GlobalErrorHandleMiddleware)
 
 	// planner
-	planner := api.Group("/planner",
-		middlewares.AuthorizeMiddleware(
-			middlewares.AuthorizeMiddlewareDependency{AuthTokenService: initalizers.AuthTokenService},
-			constants.PlannerRole))
+	planner := api.Group("/planner", initalizers.AuthorizedMiddleware.Handle(constants.PlannerRole))
 
 	planner.Get("/contracts",
 		middlewares.QueryParserMiddleware[requests.PaginationRequest],

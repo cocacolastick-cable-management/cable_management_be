@@ -7,12 +7,19 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// TODO fix it
-type AuthorizeMiddlewareDependency struct {
-	AuthTokenService services.IAuthTokenService
+type IAuthorizedMiddleware interface {
+	Handle(roles ...string) func(ctx *fiber.Ctx) error
 }
 
-func AuthorizeMiddleware(dependencies AuthorizeMiddlewareDependency, roles ...string) func(ctx *fiber.Ctx) error {
+type AuthorizeMiddleware struct {
+	authTokenService services.IAuthTokenService
+}
+
+func NewAuthorizeMiddleware(authTokenService services.IAuthTokenService) *AuthorizeMiddleware {
+	return &AuthorizeMiddleware{authTokenService: authTokenService}
+}
+
+func (am AuthorizeMiddleware) Handle(roles ...string) func(ctx *fiber.Ctx) error {
 
 	return func(ctx *fiber.Ctx) error {
 
@@ -25,7 +32,7 @@ func AuthorizeMiddleware(dependencies AuthorizeMiddlewareDependency, roles ...st
 			return utils.UnAuthenticatedResponse(ctx)
 		}
 
-		isValid, claims := dependencies.AuthTokenService.IsAccessTokenValid(accessToken)
+		isValid, claims := am.authTokenService.IsAccessTokenValid(accessToken)
 		if !isValid {
 			return utils.UnAuthenticatedResponse(ctx)
 		}
