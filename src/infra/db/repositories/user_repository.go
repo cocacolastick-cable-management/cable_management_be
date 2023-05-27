@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/cable_management/cable_management_be/src/domain/entities"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
@@ -12,6 +13,17 @@ type UserRepository struct {
 
 func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
+}
+
+func (ur UserRepository) FindById(id uuid.UUID) (*entities.User, error) {
+
+	matchingUser := &entities.User{}
+	result := ur.db.First(matchingUser, "id = ?", id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return matchingUser, nil
 }
 
 func (ur UserRepository) FindByEmail(email string) (*entities.User, error) {
