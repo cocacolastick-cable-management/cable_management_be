@@ -3,10 +3,10 @@ package admin_usecases
 import (
 	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
-	"github.com/cable_management/cable_management_be/src/domain/errs"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
+	"github.com/cable_management/cable_management_be/src/features/helpers"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -15,28 +15,25 @@ type ICreateUserCase interface {
 }
 
 type CreateUserCase struct {
-	tokenService services.IAuthTokenService
-	userFac      services.IUserFactory
-	userRepo     repositories.IUserRepository
-	validator    *validator.Validate
+	tokenService       services.IAuthTokenService
+	userFac            services.IUserFactory
+	userRepo           repositories.IUserRepository
+	validator          *validator.Validate
+	makeSureAuthorized helpers.IMakeSureAuthorized
 }
 
-func NewCreateUserCase(tokenService services.IAuthTokenService, userFac services.IUserFactory, userRepo repositories.IUserRepository, validator *validator.Validate) *CreateUserCase {
-	return &CreateUserCase{tokenService: tokenService, userFac: userFac, userRepo: userRepo, validator: validator}
+func NewCreateUserCase(tokenService services.IAuthTokenService, userFac services.IUserFactory, userRepo repositories.IUserRepository, validator *validator.Validate, makeSureAuthorized helpers.IMakeSureAuthorized) *CreateUserCase {
+	return &CreateUserCase{tokenService: tokenService, userFac: userFac, userRepo: userRepo, validator: validator, makeSureAuthorized: makeSureAuthorized}
 }
 
 func (cac CreateUserCase) Handle(accessToken string, request requests.CreateUserRequest) (*responses.UserResponse, error) {
 
-	isTokenValid, claims := cac.tokenService.IsAccessTokenValid(accessToken)
-	if !isTokenValid {
-		return nil, errs.ErrAuthFailed
+	_, err := cac.makeSureAuthorized.Handle(accessToken, constants.AdminRole)
+	if err != nil {
+		return nil, err
 	}
 
-	if claims.Role != constants.AdminRole {
-		return nil, errs.ErrUnAuthorized
-	}
-
-	err := cac.validator.Struct(request)
+	err = cac.validator.Struct(request)
 	if err != nil {
 		return nil, err
 	}
