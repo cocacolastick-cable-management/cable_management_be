@@ -25,7 +25,8 @@ var (
 	Validator *validator.Validate
 
 	//services - contract - db - repositories
-	UserRepo repositories.IUserRepository
+	UserRepo     repositories.IUserRepository
+	ContractRepo repositories.IContractRepository
 
 	//services
 	HashService      services.IPasswordHashService
@@ -61,6 +62,7 @@ func init() {
 
 	//services - contract - db - repositories
 	UserRepo = implRepositories.NewUserRepository(DB)
+	ContractRepo = implRepositories.NewContractRepository(DB)
 
 	//services
 	HashService = services.NewPasswordHashService()
