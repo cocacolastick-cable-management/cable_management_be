@@ -42,7 +42,7 @@ func Init() {
 		return
 	}
 
-	err = DB.AutoMigrate(&entities.User{})
+	err = DB.AutoMigrate(&entities.User{}, &entities.Contract{})
 	if err != nil {
 		panic(err)
 		return
