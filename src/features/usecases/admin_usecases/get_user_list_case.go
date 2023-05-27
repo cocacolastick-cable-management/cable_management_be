@@ -3,35 +3,36 @@ package admin_usecases
 import (
 	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
-	"github.com/cable_management/cable_management_be/src/domain/errs"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
+	"github.com/cable_management/cable_management_be/src/features/helpers"
 	"github.com/go-playground/validator/v10"
 )
 
 type IGetUserListCase interface {
-	Handle(accessToken string, request *requests.PaginationRequest) ([]responses.UserResponse, error)
+	Handle(accessToken string, request requests.PaginationRequest) ([]*responses.UserResponse, error)
 }
 
 type GetUserListCase struct {
-	tokenService services.IAuthTokenService
-	validator    *validator.Validate
-	userRepo     repositories.IUserRepository
+	tokenService       services.IAuthTokenService
+	validator          *validator.Validate
+	userRepo           repositories.IUserRepository
+	makeSureAuthorized helpers.IMakeSureAuthorized
+}
+
+func NewGetUserListCase(tokenService services.IAuthTokenService, validator *validator.Validate, userRepo repositories.IUserRepository, makeSureAuthorized helpers.IMakeSureAuthorized) *GetUserListCase {
+	return &GetUserListCase{tokenService: tokenService, validator: validator, userRepo: userRepo, makeSureAuthorized: makeSureAuthorized}
 }
 
 func (gul GetUserListCase) Handle(accessToken string, request requests.PaginationRequest) ([]*responses.UserResponse, error) {
 
-	isTokenValid, claims := gul.tokenService.IsAccessTokenValid(accessToken)
-	if !isTokenValid {
-		return nil, errs.ErrAuthFailed
+	_, err := gul.makeSureAuthorized.Handle(accessToken, constants.AdminRole)
+	if err != nil {
+		return nil, err
 	}
 
-	if claims.Role != constants.AdminRole {
-		return nil, errs.ErrUnAuthorized
-	}
-
-	err := gul.validator.Struct(request)
+	err = gul.validator.Struct(request)
 	if err != nil {
 		return nil, err
 	}
