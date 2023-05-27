@@ -9,6 +9,7 @@ import (
 	"github.com/cable_management/cable_management_be/src/features/helpers"
 	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
+	"github.com/cable_management/cable_management_be/src/features/usecases/planner_usecases"
 	featValidations "github.com/cable_management/cable_management_be/src/features/validations"
 	"github.com/cable_management/cable_management_be/src/infra/db"
 	implRepositories "github.com/cable_management/cable_management_be/src/infra/db/repositories"
@@ -44,6 +45,9 @@ var (
 	CreateUserCase  admin_usecases.ICreateUserCase
 	GetUserListCase admin_usecases.IGetUserListCase
 
+	//planner_usecases
+	GetContractListCase planner_usecases.IGetContractListCase
+
 	//common_controllers
 	AuthController common_controllers.IAuthController
 
@@ -78,7 +82,10 @@ func init() {
 
 	//admin_usecases
 	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized)
-	GetUserListCase = admin_usecases.NewGetUserListCase(AuthTokenService, Validator, UserRepo, MakeSureAuthorized)
+	GetUserListCase = admin_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
+
+	//planner_usecase
+	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized, Validator)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
