@@ -42,10 +42,11 @@ func (gul GetUserListCase) Handle(accessToken string, request requests.Paginatio
 	response := make([]*responses.UserResponse, len(userList))
 	for i, user := range userList {
 		response[i] = &responses.UserResponse{
-			Id:        user.Id,
-			Role:      user.Role,
-			Email:     user.Email,
-			CreatedAt: user.CreatedAt.UTC(),
+			Id:          user.Id,
+			Role:        user.Role,
+			DisplayName: user.DisplayName,
+			Email:       user.Email,
+			CreatedAt:   user.CreatedAt.UTC(),
 		}
 	}
 

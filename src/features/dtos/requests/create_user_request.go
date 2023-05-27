@@ -1,7 +1,8 @@
 package requests
 
 type CreateUserRequest struct {
-	Role     string
-	Email    string
-	Password string
+	Role        string
+	DisplayName string
+	Email       string
+	Password    string
 }

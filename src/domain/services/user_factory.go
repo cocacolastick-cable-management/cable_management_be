@@ -9,7 +9,7 @@ import (
 )
 
 type IUserFactory interface {
-	CreateUser(role, email, password string) (*entities.User, error)
+	CreateUser(role, displayName, email, password string) (*entities.User, error)
 }
 
 type UserFactory struct {
@@ -21,7 +21,7 @@ func NewUserFactory(userRepo repositories.IUserRepository, hashService IPassword
 	return &UserFactory{userRepo: userRepo, hashService: hashService}
 }
 
-func (uf UserFactory) CreateUser(role, email, password string) (*entities.User, error) {
+func (uf UserFactory) CreateUser(role, displayName, email, password string) (*entities.User, error) {
 
 	if !validations.ValidateRole(role) {
 		return nil, errs.ErrInvalidRole
@@ -38,5 +38,5 @@ func (uf UserFactory) CreateUser(role, email, password string) (*entities.User, 
 
 	passwordHash, _ := uf.hashService.Hash(password)
 
-	return entities.NewUser(role, email, passwordHash, time.Now()), nil
+	return entities.NewUser(role, displayName, email, passwordHash, time.Now()), nil
 }
