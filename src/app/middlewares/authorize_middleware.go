@@ -1,13 +1,17 @@
 package middlewares
 
 import (
-	"github.com/cable_management/cable_management_be/src/app/initalizers"
 	"github.com/cable_management/cable_management_be/src/app/utils"
+	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/exp/slices"
 )
 
-func AuthorizeMiddleware(roles ...string) func(ctx *fiber.Ctx) error {
+type AuthorizeMiddlewareDependency struct {
+	AuthTokenService services.IAuthTokenService
+}
+
+func AuthorizeMiddleware(dependencies AuthorizeMiddlewareDependency, roles ...string) func(ctx *fiber.Ctx) error {
 
 	return func(ctx *fiber.Ctx) error {
 
@@ -20,7 +24,7 @@ func AuthorizeMiddleware(roles ...string) func(ctx *fiber.Ctx) error {
 			return utils.UnAuthenticatedResponse(ctx)
 		}
 
-		isValid, claims := initalizers.AuthTokenService.IsAccessTokenValid(accessToken)
+		isValid, claims := dependencies.AuthTokenService.IsAccessTokenValid(accessToken)
 		if !isValid {
 			return utils.UnAuthenticatedResponse(ctx)
 		}
