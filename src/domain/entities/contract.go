@@ -11,6 +11,7 @@ type Contract struct {
 	StartDay    time.Time
 	EndDay      time.Time
 	CableAmount uint
+	CreatedAt   time.Time
 	SupplierId  uuid.UUID
 
 	Supplier *User `gorm:"foreignKey:SupplierId"`
