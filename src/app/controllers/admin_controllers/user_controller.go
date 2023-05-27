@@ -2,6 +2,7 @@ package admin_controllers
 
 import (
 	"github.com/cable_management/cable_management_be/src/app/utils"
+	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
@@ -55,7 +56,7 @@ func (uc UserController) GetUserList(ctx *fiber.Ctx) error {
 	var err error
 
 	//parse request
-	accessToken := ctx.Locals("access-token").(string)
+	accessToken := ctx.Locals(services.AccessTokenTypeName).(string)
 	query := ctx.Locals("query").(requests.PaginationRequest)
 
 	//handle

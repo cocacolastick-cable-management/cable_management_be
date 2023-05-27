@@ -3,6 +3,7 @@ package initalizers
 import (
 	"github.com/cable_management/cable_management_be/src/app/controllers/admin_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/common_controllers"
+	"github.com/cable_management/cable_management_be/src/app/controllers/planner_controller"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
@@ -53,6 +54,9 @@ var (
 
 	//admin_controllers
 	UserController admin_controllers.IUserController
+
+	//planner_controller
+	ContractController planner_controller.IContractController
 )
 
 func init() {
@@ -89,7 +93,12 @@ func init() {
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
+
+	//admin_controllers
 	UserController = admin_controllers.NewUserController(CreateUserCase, GetUserListCase)
+
+	//planner_controllers
+	ContractController = planner_controller.NewContractController(GetContractListCase)
 }
 
 func InitValidator() {

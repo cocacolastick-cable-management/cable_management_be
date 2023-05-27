@@ -7,6 +7,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// TODO fix it
 type AuthorizeMiddlewareDependency struct {
 	AuthTokenService services.IAuthTokenService
 }
@@ -33,7 +34,7 @@ func AuthorizeMiddleware(dependencies AuthorizeMiddlewareDependency, roles ...st
 			return utils.UnAuthorizedResponse(ctx)
 		}
 
-		ctx.Locals("access-token", accessToken)
+		ctx.Locals(services.AccessTokenTypeName, accessToken)
 
 		return ctx.Next()
 	}
