@@ -1,13 +1,10 @@
 package common_controllers
 
 import (
-	"errors"
 	"github.com/cable_management/cable_management_be/src/app/utils"
-	"github.com/cable_management/cable_management_be/src/domain/errs"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -27,12 +24,8 @@ func (ac AuthController) SignIn(ctx *fiber.Ctx) error {
 
 	var err error
 
-	//parse request
-	request := requests.SignInRequest{}
-	err = ctx.BodyParser(&request)
-	if err != nil {
-		return ctx.Status(400).JSON(err)
-	}
+	//get body
+	request := ctx.Locals("body").(requests.SignInRequest)
 
 	//handle
 	var authData *services.AuthData
@@ -40,16 +33,9 @@ func (ac AuthController) SignIn(ctx *fiber.Ctx) error {
 
 	//check error
 	if err != nil {
-		if validErrors, ok := err.(validator.ValidationErrors); ok {
-			return ctx.JSON(utils.ValidationErrorToStruct(validErrors))
-		}
-		if errors.Is(err, errs.ErrAuthFailed) {
-			return ctx.Status(401).JSON(utils.Response{
-				Message: "authenticate failed",
-				Code:    "AF",
-			})
-		}
-		panic(err)
+		//check for other cases before pass to global error handler
+		ctx.Locals("err", err)
+		return ctx.Next()
 	}
 
 	// return happy result
