@@ -19,7 +19,7 @@ func init() {
 	//}
 	//
 	//ENV.DbDsn = os.Getenv("DB_DSN")
-	ENV.DbDsn = "host=localhost user=postgres password=postgrespw dbname=cable_management_db port=32768 sslmode=disable TimeZone=Asia/Shanghai"
+	ENV.DbDsn = "host=localhost user=postgres password=postgrespw dbname=cable_management_db port=32770 sslmode=disable TimeZone=Asia/Shanghai"
 	ENV.JwtSecret = "124567890!@#$%^&*()sdghjklWERTYUIO"
 	ENV.JwtAuthor = "vudeptrai"
 }
