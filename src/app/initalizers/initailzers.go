@@ -1,10 +1,14 @@
 package initalizers
 
 import (
+	"github.com/cable_management/cable_management_be/src/app/controllers/admin_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/common_controllers"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
 	"github.com/cable_management/cable_management_be/src/domain/services"
+	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
+	featValidations "github.com/cable_management/cable_management_be/src/features/validations"
 	"github.com/cable_management/cable_management_be/src/infra/db"
 	implRepositories "github.com/cable_management/cable_management_be/src/infra/db/repositories"
 	"github.com/cable_management/cable_management_be/src/infra/valider"
@@ -26,12 +30,19 @@ var (
 	HashService      services.IPasswordHashService
 	AuthTokenService services.IAuthTokenService
 	AuthService      services.IAuthService
+	UserFac          services.IUserFactory
 
 	//common_usecases
 	SignInCase common_usecases.ISignInCase
 
+	//admin_usecases
+	CreateUserCase admin_usecases.ICreateUserCase
+
 	//common_controllers
 	AuthController common_controllers.IAuthController
+
+	//admin_controllers
+	UserController admin_controllers.IUserController
 )
 
 func init() {
@@ -40,8 +51,7 @@ func init() {
 	DB = db.DB
 
 	//infra - valider
-	valider.Init()
-	valider.SetStructValidations(nil)
+	InitValidator()
 	Validator = valider.Validator
 
 	//services - contract - db - repositories
@@ -51,10 +61,28 @@ func init() {
 	HashService = services.NewPasswordHashService()
 	AuthTokenService = services.NewAuthTokenService()
 	AuthService = services.NewAuthService(UserRepo, HashService, AuthTokenService)
+	UserFac = services.NewUserFactory(UserRepo, HashService)
 
 	//common_usecases
 	SignInCase = common_usecases.NewSignInCase(AuthService, Validator)
 
+	//admin_usecases
+	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator)
+
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
+	UserController = admin_controllers.NewUserController(CreateUserCase)
+}
+
+func InitValidator() {
+	valider.Init()
+	valider.SetStructValidations([]struct {
+		Fn   validator.StructLevelFunc
+		Type any
+	}{
+		{
+			Fn:   featValidations.ValidateCreateUserRequest,
+			Type: requests.CreateUserRequest{},
+		},
+	})
 }

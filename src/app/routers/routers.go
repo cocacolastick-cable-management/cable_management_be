@@ -8,5 +8,9 @@ import (
 func MountApiRouters(app *fiber.App) {
 	api := app.Group("api/")
 
-	api.Post("/sign-in", initalizers.AuthController.SignIn)
+	common := api.Group("/")
+	common.Post("/sign-in", initalizers.AuthController.SignIn)
+
+	admin := api.Group("/admin")
+	admin.Post("/users", initalizers.UserController.CreateUser)
 }
