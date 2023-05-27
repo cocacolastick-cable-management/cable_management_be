@@ -16,7 +16,7 @@ func Pagination(db *gorm.DB, page uint, size uint, orderBy *string, lastTimestam
 	}
 
 	if lastTimestamp != nil {
-		query = query.Where("inserted_at < ?", lastTimestamp)
+		query = query.Where("created_at < ?", lastTimestamp)
 	}
 
 	query = query.
