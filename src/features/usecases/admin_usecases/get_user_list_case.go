@@ -37,7 +37,7 @@ func (gul GetUserListCase) Handle(accessToken string, request requests.Paginatio
 		return nil, err
 	}
 
-	userList, _ := gul.userRepo.GetList(request.Page, request.Size, request.LastTimestamp)
+	userList, _ := gul.userRepo.GetList(request.Page, request.Size, request.OrderBy, request.LastTimestamp)
 
 	response := make([]*responses.UserResponse, len(userList))
 	for i, user := range userList {
@@ -45,7 +45,7 @@ func (gul GetUserListCase) Handle(accessToken string, request requests.Paginatio
 			Id:        user.Id,
 			Role:      user.Role,
 			Email:     user.Email,
-			CreatedAt: user.CreatedAt,
+			CreatedAt: user.CreatedAt.UTC(),
 		}
 	}
 

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/cable_management/cable_management_be/src/domain/entities"
+	"github.com/cable_management/cable_management_be/src/infra/db/utils"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
@@ -37,10 +38,10 @@ func (ur UserRepository) FindByEmail(email string) (*entities.User, error) {
 	return matchingUser, nil
 }
 
-func (ur UserRepository) GetList(page uint, size uint, lastTimestamp *time.Time) ([]*entities.User, error) {
+func (ur UserRepository) GetList(page uint, size uint, orderBy *string, lastTimestamp *time.Time) ([]*entities.User, error) {
 
 	userList := make([]*entities.User, size)
-	ur.db.Offset(int((page - 1) * size)).Limit(int(size)).Find(&userList)
+	utils.Pagination(ur.db, page, size, orderBy, lastTimestamp).Find(&userList)
 	return userList, nil
 }
 
