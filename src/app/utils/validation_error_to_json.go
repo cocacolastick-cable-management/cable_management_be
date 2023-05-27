@@ -13,7 +13,7 @@ func ValidationErrorToStruct(err validator.ValidationErrors) []*ErrorResponse {
 	if err != nil {
 		for _, err := range err {
 			var element ErrorResponse
-			element.FailedField = err.StructNamespace()
+			element.FailedField = err.Field()
 			element.Tag = err.Tag()
 			element.Value = err.Param()
 			errors = append(errors, &element)
