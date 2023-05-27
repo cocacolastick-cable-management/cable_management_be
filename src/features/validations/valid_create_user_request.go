@@ -13,16 +13,16 @@ func ValidateCreateUserRequest(sl validator.StructLevel) {
 	request := sl.Current().Interface().(requests.CreateUserRequest)
 
 	if !validations.ValidateRole(request.Role) {
-		sl.ReportError(request.Role, "role", "Role", "invalid", "invalid role")
+		sl.ReportError(request.Role, "Role", "Role", "invalid", "invalid role")
 	}
 
 	if !validations.ValidatePassword(request.Password) {
-		sl.ReportError(request.Password, "password", "Password", "invalid", "invalid password format")
+		sl.ReportError(request.Password, "Password", "Password", "invalid", "invalid password format")
 	}
 
 	userRepo := repositories.NewUserRepository(db.DB)
 	matchingUser, _ := userRepo.FindByEmail(request.Email)
 	if matchingUser != nil {
-		sl.ReportError(request.Email, "email", "Email", "duplicated", "duplicated email")
+		sl.ReportError(request.Email, "Email", "Email", "duplicated", "duplicated email")
 	}
 }

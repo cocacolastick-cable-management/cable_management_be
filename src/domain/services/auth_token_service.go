@@ -23,8 +23,8 @@ var (
 )
 
 type AuthData struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	AccessToken  string
+	RefreshToken string
 }
 
 type AuthTokenClaims struct {
