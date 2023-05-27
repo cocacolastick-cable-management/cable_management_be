@@ -13,7 +13,7 @@ func GlobalErrorHandleMiddleware(ctx *fiber.Ctx) error {
 	err := ctx.Locals("err").(error)
 
 	if validErrors, ok := err.(validator.ValidationErrors); ok {
-		return ctx.Status(400).JSON(utils.ValidationErrorToStruct(validErrors))
+		return utils.ValidationErrorResponse(ctx, validErrors)
 	}
 
 	if errors.Is(err, errs.ErrAuthFailed) {
