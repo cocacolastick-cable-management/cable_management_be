@@ -15,10 +15,11 @@ type IUserController interface {
 
 type UserController struct {
 	createUserCase admin_usecases.ICreateUserCase
+	getUserList    admin_usecases.IGetUserListCase
 }
 
-func NewUserController(createUserCase admin_usecases.ICreateUserCase) *UserController {
-	return &UserController{createUserCase: createUserCase}
+func NewUserController(createUserCase admin_usecases.ICreateUserCase, getUserList admin_usecases.IGetUserListCase) *UserController {
+	return &UserController{createUserCase: createUserCase, getUserList: getUserList}
 }
 
 func (uc UserController) CreateUser(ctx *fiber.Ctx) error {
@@ -50,6 +51,28 @@ func (uc UserController) CreateUser(ctx *fiber.Ctx) error {
 }
 
 func (uc UserController) GetUserList(ctx *fiber.Ctx) error {
-	//TODO implement me
-	panic("implement me")
+
+	var err error
+
+	//parse request
+	accessToken := ctx.Locals("access-token").(string)
+	query := ctx.Locals("query").(requests.PaginationRequest)
+
+	//handle
+	var userListRes []*responses.UserResponse
+	userListRes, err = uc.getUserList.Handle(accessToken, query)
+
+	//check error
+	if err != nil {
+		//check for other cases before pass to global error handler
+		ctx.Locals("err", err)
+		return ctx.Next()
+	}
+
+	// return happy result
+	return ctx.Status(200).JSON(utils.Response{
+		Message: "Success",
+		Code:    "OK",
+		Payload: userListRes,
+	})
 }
