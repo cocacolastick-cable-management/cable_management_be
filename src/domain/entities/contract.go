@@ -14,7 +14,8 @@ type Contract struct {
 	CreatedAt   time.Time
 	SupplierId  uuid.UUID
 
-	Supplier *User `gorm:"foreignKey:SupplierId"`
+	Supplier         *User              `gorm:"foreignKey:SupplierId"`
+	WithDrawRequests []*WithDrawRequest `gorm:"foreignKey:ContractId"`
 }
 
 func NewContract(startDay time.Time, endDay time.Time, supplierId uuid.UUID) *Contract {
