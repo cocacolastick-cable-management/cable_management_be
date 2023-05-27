@@ -27,10 +27,10 @@ func (cr ContractRepository) FindById(id uuid.UUID) (*entities.Contract, error) 
 	return matchingContract, nil
 }
 
-func (cr ContractRepository) GetList(page uint, size uint, orderBy *string, lastTimestamp *time.Time) ([]*entities.Contract, error) {
+func (cr ContractRepository) GetList(with string, page uint, size uint, orderBy *string, lastTimestamp *time.Time) ([]*entities.Contract, error) {
 
 	contractList := make([]*entities.Contract, size)
-	utils.Pagination(cr.db, page, size, orderBy, lastTimestamp).Find(&contractList)
+	utils.Pagination(cr.db, page, size, orderBy, lastTimestamp).InnerJoins(with).Find(&contractList)
 	return contractList, nil
 }
 
