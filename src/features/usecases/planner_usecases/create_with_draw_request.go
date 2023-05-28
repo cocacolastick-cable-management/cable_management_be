@@ -9,7 +9,6 @@ import (
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/helpers"
 	"github.com/go-playground/validator/v10"
-	"time"
 )
 
 type ICreateWithDrawCase interface {
@@ -45,12 +44,12 @@ func (cwd CreateWithDrawCase) Handle(accessToken string, request requests.Create
 	}
 
 	newWithDraw, _ := cwd.withDrawFac.CreateRequest(request.CableAmount, request.ContractId, request.ContractorId)
-	newHistory := entities.NewWithDrawRequestHistory(constants.WD_CreateAction, time.Now(), newWithDraw.Status, claims.AccountId, newWithDraw.Id)
+	newHistory := entities.NewWithDrawRequestHistory(constants.WD_CreateAction, newWithDraw.CreatedAt, newWithDraw.Status, claims.AccountId, newWithDraw.Id)
 
 	_ = cwd.withDrawRepo.Insert(newWithDraw)
 	_ = cwd.historyRepo.Insert(newHistory)
 
-	newWithDraw, _ = cwd.withDrawRepo.FindById(newWithDraw.Id, []string{"Histories", "Contract", "Contract.Supplier", "Contractor"})
+	newWithDraw, _ = cwd.withDrawRepo.FindById(newWithDraw.Id, []string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
 
 	return helpers.MapWithDrawToResponse(newWithDraw)
 }

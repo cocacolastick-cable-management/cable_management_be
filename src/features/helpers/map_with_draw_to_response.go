@@ -12,6 +12,11 @@ func MapWithDrawToResponse(withDraw *entities.WithDrawRequest) (*responses.WithD
 		return nil, errs.ErrNotIncludeRelationship
 	}
 
+	historyListRes := make([]*responses.HistoryResponse, len(withDraw.Histories))
+	for i, history := range withDraw.Histories {
+		historyListRes[i], _ = MapHistoryResponse(history)
+	}
+
 	return &responses.WithDrawResponse{
 		Id:             withDraw.Id,
 		SupplierId:     withDraw.Contract.SupplierId,
@@ -21,7 +26,7 @@ func MapWithDrawToResponse(withDraw *entities.WithDrawRequest) (*responses.WithD
 		ContractId:     withDraw.ContractId,
 		CableAmount:    withDraw.CableAmount,
 		Status:         withDraw.Status,
-		CreatedAt:      withDraw.CreatedAt,
-		Histories:      withDraw.Histories,
+		CreatedAt:      withDraw.CreatedAt.UTC(),
+		Histories:      historyListRes,
 	}, nil
 }

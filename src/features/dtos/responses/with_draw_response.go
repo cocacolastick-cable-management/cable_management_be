@@ -1,7 +1,6 @@
 package responses
 
 import (
-	"github.com/cable_management/cable_management_be/src/domain/entities"
 	"github.com/google/uuid"
 	"time"
 )
@@ -16,5 +15,5 @@ type WithDrawResponse struct {
 	CableAmount    uint
 	Status         string
 	CreatedAt      time.Time
-	Histories      []*entities.WithDrawRequestHistory
+	Histories      []*HistoryResponse
 }
