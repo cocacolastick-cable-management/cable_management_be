@@ -38,14 +38,18 @@ func (gcl GetContractListCase) Handle(accessToken string, request requests.Pagin
 		return nil, err
 	}
 
-	contractList, _ := gcl.contractRepo.GetList(request.Page, request.Size, request.OrderBy, request.LastTimestamp, []string{"Supplier"})
+	contractList, _ := gcl.contractRepo.GetList(request.Page, request.Size, request.OrderBy, request.LastTimestamp, []string{"Supplier", "WithDrawRequests"})
 
 	response := make([]*responses.ContractResponse, len(contractList))
 	for i, contract := range contractList {
+
+		stock, _ := contract.CalCableStock()
 		response[i] = &responses.ContractResponse{
 			Id:           contract.Id,
 			SupplierId:   contract.SupplierId,
 			SupplierName: contract.Supplier.DisplayName,
+			CableAmount:  contract.CableAmount,
+			Stock:        stock,
 			StartDay:     time.Time{},
 			EndDay:       time.Time{},
 			CreatedAt:    time.Time{},

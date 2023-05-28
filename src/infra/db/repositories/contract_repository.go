@@ -39,7 +39,7 @@ func (cr ContractRepository) GetList(page uint, size uint, orderBy *string, last
 	query := utils.Pagination(cr.db, page, size, orderBy, lastTimestamp)
 
 	for _, with := range withs {
-		query = query.Joins(with)
+		query = query.Preload(with)
 	}
 
 	query.Find(&contractList)
