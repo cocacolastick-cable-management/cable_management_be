@@ -39,5 +39,9 @@ func (wdf WithDrawRequestFactory) CreateRequest(cableAmount uint, contractId uui
 		return nil, errs.ErrNotFoundContractor
 	}
 
-	return entities.NewWithDrawRequest(constants.WD_NewStatus, cableAmount, time.Now(), contractId, contractorId), nil
+	newWithDraw := entities.NewWithDrawRequest(constants.WD_NewStatus, cableAmount, time.Now(), contractId, contractorId)
+	newWithDraw.Contract = matchingContract
+	newWithDraw.Contractor = matchingContractor
+
+	return newWithDraw, nil
 }

@@ -49,6 +49,7 @@ var (
 
 	//planner_usecases
 	GetContractListCase planner_usecases.IGetContractListCase
+	CreateWithDrawCasae planner_usecases.ICreateWithDrawCase
 
 	//common_controllers
 	AuthController common_controllers.IAuthController
@@ -64,6 +65,7 @@ var (
 
 	//infra - valider
 	ValidCreateUserReqDep     *featValidations.ValidateCreateUserRequestDependency
+	ValidCreateWithDrawReqDep *featValidations.ValidateCreateWithDrawRequestDependency
 	Validator                 *validator.Validate
 )
 
@@ -97,6 +99,7 @@ func init() {
 
 	//planner_usecase
 	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized, Validator)
+	CreateWithDrawCasae = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, ContractRepo, MakeSureAuthorized, Validator)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
@@ -112,6 +115,7 @@ func init() {
 
 	//infra - valider
 	ValidCreateUserReqDep = featValidations.NewValidateCreateUserRequestDependency(UserRepo)
+	ValidCreateWithDrawReqDep = featValidations.NewValidateCreateWithDrawRequestDependency(ContractRepo, UserRepo)
 	InitValidator()
 	Validator = valider.Validator
 }
@@ -125,6 +129,10 @@ func InitValidator() {
 		{
 			Fn:   featValidations.ValidateCreateUserRequest(ValidCreateUserReqDep),
 			Type: requests.CreateUserRequest{},
+		},
+		{
+			Fn:   featValidations.ValidateCreateWithDrawRequest(ValidCreateWithDrawReqDep),
+			Type: requests.CreateWithDrawRequest{},
 		},
 	})
 }
