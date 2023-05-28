@@ -9,6 +9,7 @@ type WithDrawRequestHistory struct {
 	AbstractEntity
 
 	Action    string `gorm:"type:varchar"`
+	Status    string `gorm:"type:varchar"`
 	CreatedAt time.Time
 
 	CreatorId uuid.UUID `gorm:"type:varchar"`

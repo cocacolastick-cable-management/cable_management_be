@@ -16,10 +16,16 @@ func NewContractRepository(db *gorm.DB) *ContractRepository {
 	return &ContractRepository{db: db}
 }
 
-func (cr ContractRepository) FindById(id uuid.UUID) (*entities.Contract, error) {
+func (cr ContractRepository) FindById(id uuid.UUID, withs []string) (*entities.Contract, error) {
 
 	matchingContract := &entities.Contract{}
-	result := cr.db.First(matchingContract, "id = ?", id)
+
+	query := cr.db
+	for _, with := range withs {
+		query = query.Preload(with)
+	}
+
+	result := query.First(matchingContract, "contracts.id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -27,14 +33,21 @@ func (cr ContractRepository) FindById(id uuid.UUID) (*entities.Contract, error) 
 	return matchingContract, nil
 }
 
-func (cr ContractRepository) GetList(with string, page uint, size uint, orderBy *string, lastTimestamp *time.Time) ([]*entities.Contract, error) {
+func (cr ContractRepository) GetList(page uint, size uint, orderBy *string, lastTimestamp *time.Time, withs []string) ([]*entities.Contract, error) {
 
 	contractList := make([]*entities.Contract, size)
-	utils.Pagination(cr.db, page, size, orderBy, lastTimestamp).InnerJoins(with).Find(&contractList)
+	query := utils.Pagination(cr.db, page, size, orderBy, lastTimestamp)
+
+	for _, with := range withs {
+		query = query.Joins(with)
+	}
+
+	query.Find(&contractList)
+
 	return contractList, nil
 }
 
-func (cr ContractRepository) Insert(user *entities.Contract) error {
-	result := cr.db.Create(user)
+func (cr ContractRepository) Insert(contract *entities.Contract) error {
+	result := cr.db.Create(contract)
 	return result.Error
 }

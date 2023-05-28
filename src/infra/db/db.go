@@ -11,24 +11,24 @@ var (
 	DB *gorm.DB
 )
 
-//func init() {
-//
-//	dsn := config.ENV.DbDsn
-//
-//	var err error = nil
-//
-//	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-//	if err != nil {
-//		panic(err)
-//		return
-//	}
-//
-//	err = DB.AutoMigrate(&entities.User{})
-//	if err != nil {
-//		panic(err)
-//		return
-//	}
-//}
+func init() {
+
+	dsn := config.ENV.DbDsn
+
+	var err error = nil
+
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	err = DB.AutoMigrate(&entities.User{})
+	if err != nil {
+		panic(err)
+		return
+	}
+}
 
 func Init() {
 
