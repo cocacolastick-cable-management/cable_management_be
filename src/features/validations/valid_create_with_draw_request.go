@@ -25,15 +25,19 @@ func ValidateCreateWithDrawRequest(dependency *ValidateCreateWithDrawRequestDepe
 		matchingContract, _ := dependency.contractRepo.FindById(request.ContractId, []string{"WithDrawRequests"})
 		if matchingContract == nil {
 			sl.ReportError(request.ContractId, "ContractId", "ContractId", "not-found", "not found contract")
+		} else {
+			cableStock, _ := matchingContract.CalCableStock()
+			if int(request.CableAmount) > cableStock {
+				sl.ReportError(request.CableAmount, "CableAmount", "CableAmount", "invalid", "invalid cable amount")
+			}
 		}
 
-		cableStock, _ := matchingContract.CalCableStock()
-		if request.CableAmount <= 0 || int(request.CableAmount) > cableStock {
+		if request.CableAmount <= 0 {
 			sl.ReportError(request.CableAmount, "CableAmount", "CableAmount", "invalid", "invalid cable amount")
 		}
 
 		matchingContractor, _ := dependency.userRepo.FindById(request.ContractorId)
-		if matchingContract == nil || matchingContractor.Role != constants.ContractorRole {
+		if matchingContractor == nil || matchingContractor.Role != constants.ContractorRole {
 			sl.ReportError(request.ContractorId, "ContractorId", "ContractorId", "not-found", "not found contractor")
 		}
 	}

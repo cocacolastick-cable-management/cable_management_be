@@ -30,6 +30,11 @@ var (
 	WithDrawReqRepo    repositories.IWithDrawRequestRepository
 	WithDrawReqHisRepo repositories.IWithDrawRequestHistoryRepository
 
+	//infra - valider
+	ValidCreateUserReqDep     *featValidations.ValidateCreateUserRequestDependency
+	ValidCreateWithDrawReqDep *featValidations.ValidateCreateWithDrawRequestDependency
+	Validator                 *validator.Validate
+
 	//services
 	HashService      services.IPasswordHashService
 	AuthTokenService services.IAuthTokenService
@@ -49,7 +54,7 @@ var (
 
 	//planner_usecases
 	GetContractListCase planner_usecases.IGetContractListCase
-	CreateWithDrawCasae planner_usecases.ICreateWithDrawCase
+	CreateWithDrawCase  planner_usecases.ICreateWithDrawCase
 
 	//common_controllers
 	AuthController common_controllers.IAuthController
@@ -59,14 +64,10 @@ var (
 
 	//planner_controller
 	ContractController planner_controller.IContractController
+	WithDrawController planner_controller.IWithDrawController
 
 	//middleware
 	AuthorizedMiddleware middlewares.IAuthorizedMiddleware
-
-	//infra - valider
-	ValidCreateUserReqDep     *featValidations.ValidateCreateUserRequestDependency
-	ValidCreateWithDrawReqDep *featValidations.ValidateCreateWithDrawRequestDependency
-	Validator                 *validator.Validate
 )
 
 func init() {
@@ -79,6 +80,12 @@ func init() {
 	ContractRepo = implRepositories.NewContractRepository(DB)
 	WithDrawReqRepo = implRepositories.NewWithDrawRequestRepository(DB)
 	WithDrawReqHisRepo = implRepositories.NewWithDrawRequestHistoryRepository(DB)
+
+	//infra - valider
+	ValidCreateUserReqDep = featValidations.NewValidateCreateUserRequestDependency(UserRepo)
+	ValidCreateWithDrawReqDep = featValidations.NewValidateCreateWithDrawRequestDependency(ContractRepo, UserRepo)
+	InitValidator()
+	Validator = valider.Validator
 
 	//services
 	HashService = services.NewPasswordHashService()
@@ -99,7 +106,7 @@ func init() {
 
 	//planner_usecase
 	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized, Validator)
-	CreateWithDrawCasae = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, ContractRepo, MakeSureAuthorized, Validator)
+	CreateWithDrawCase = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, WithDrawReqHisRepo, ContractRepo, MakeSureAuthorized, Validator)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
@@ -109,15 +116,11 @@ func init() {
 
 	//planner_controllers
 	ContractController = planner_controller.NewContractController(GetContractListCase)
+	WithDrawController = planner_controller.NewWithDrawController(CreateWithDrawCase)
 
 	//middleware
 	AuthorizedMiddleware = middlewares.NewAuthorizeMiddleware(AuthTokenService)
 
-	//infra - valider
-	ValidCreateUserReqDep = featValidations.NewValidateCreateUserRequestDependency(UserRepo)
-	ValidCreateWithDrawReqDep = featValidations.NewValidateCreateWithDrawRequestDependency(ContractRepo, UserRepo)
-	InitValidator()
-	Validator = valider.Validator
 }
 
 func InitValidator() {

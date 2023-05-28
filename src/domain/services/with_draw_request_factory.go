@@ -35,13 +35,10 @@ func (wdf WithDrawRequestFactory) CreateRequest(cableAmount uint, contractId uui
 	}
 
 	matchingContractor, _ := wdf.userRepo.FindById(contractorId)
-	if matchingContract == nil || matchingContractor.Role != constants.ContractorRole {
+	if matchingContractor == nil || matchingContractor.Role != constants.ContractorRole {
 		return nil, errs.ErrNotFoundContractor
 	}
 
 	newWithDraw := entities.NewWithDrawRequest(constants.WD_NewStatus, cableAmount, time.Now(), contractId, contractorId)
-	newWithDraw.Contract = matchingContract
-	newWithDraw.Contractor = matchingContractor
-
 	return newWithDraw, nil
 }

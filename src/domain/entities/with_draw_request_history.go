@@ -19,6 +19,6 @@ type WithDrawRequestHistory struct {
 	Request *WithDrawRequest `gorm:"foreignKey:RequestId"`
 }
 
-func NewWithDrawRequestHistory(action string, createdAt time.Time, creatorId uuid.UUID, requestId uuid.UUID) *WithDrawRequestHistory {
-	return &WithDrawRequestHistory{AbstractEntity: NewAbstractEntity(), Action: action, CreatedAt: createdAt, CreatorId: creatorId, RequestId: requestId}
+func NewWithDrawRequestHistory(action string, createdAt time.Time, status string, creatorId uuid.UUID, requestId uuid.UUID) *WithDrawRequestHistory {
+	return &WithDrawRequestHistory{AbstractEntity: NewAbstractEntity(), Action: action, Status: status, CreatedAt: createdAt, CreatorId: creatorId, RequestId: requestId}
 }

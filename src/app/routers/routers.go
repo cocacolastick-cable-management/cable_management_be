@@ -39,5 +39,9 @@ func MountApiRouters(app *fiber.App) {
 		middlewares.QueryParserMiddleware[requests.PaginationRequest],
 		initalizers.ContractController.GetContractList)
 
+	planner.Post("/with-draws",
+		middlewares.BodyParserMiddleware[requests.CreateWithDrawRequest],
+		initalizers.WithDrawController.CreateWithDrawRequest)
+
 	planner.Use(middlewares.GlobalErrorHandleMiddleware)
 }

@@ -28,7 +28,7 @@ func (uc UserController) CreateUser(ctx *fiber.Ctx) error {
 	var err error
 
 	//parse request
-	accessToken := ctx.Locals("access-token").(string)
+	accessToken := ctx.Locals(services.AccessTokenTypeName).(string)
 
 	request := ctx.Locals("body").(requests.CreateUserRequest)
 
