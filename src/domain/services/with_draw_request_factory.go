@@ -18,6 +18,10 @@ type WithDrawRequestFactory struct {
 	userRepo     repositories.IUserRepository
 }
 
+func NewWithDrawRequestFactory(contractRepo repositories.IContractRepository, userRepo repositories.IUserRepository) *WithDrawRequestFactory {
+	return &WithDrawRequestFactory{contractRepo: contractRepo, userRepo: userRepo}
+}
+
 func (wdf WithDrawRequestFactory) CreateRequest(cableAmount uint, contractId uuid.UUID, contractorId uuid.UUID) (*entities.WithDrawRequest, error) {
 
 	matchingContract, _ := wdf.contractRepo.FindById(contractId, []string{"WithDrawRequests"})

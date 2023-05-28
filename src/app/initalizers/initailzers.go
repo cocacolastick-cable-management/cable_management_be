@@ -28,14 +28,17 @@ var (
 	Validator *validator.Validate
 
 	//services - contract - db - repositories
-	UserRepo     repositories.IUserRepository
-	ContractRepo repositories.IContractRepository
+	UserRepo           repositories.IUserRepository
+	ContractRepo       repositories.IContractRepository
+	WithDrawReqRepo    repositories.IWithDrawRequestRepository
+	WithDrawReqHisRepo repositories.IWithDrawRequestHistoryRepository
 
 	//services
 	HashService      services.IPasswordHashService
 	AuthTokenService services.IAuthTokenService
 	AuthService      services.IAuthService
 	UserFac          services.IUserFactory
+	WithDrawReqFac   services.IWithDrawRequestFactory
 
 	//helpers
 	MakeSureAuthorized helpers.IMakeSureAuthorized
@@ -75,12 +78,15 @@ func init() {
 	//services - contract - db - repositories
 	UserRepo = implRepositories.NewUserRepository(DB)
 	ContractRepo = implRepositories.NewContractRepository(DB)
+	WithDrawReqRepo = implRepositories.NewWithDrawRequestRepository(DB)
+	WithDrawReqHisRepo = implRepositories.NewWithDrawRequestHistoryRepository(DB)
 
 	//services
 	HashService = services.NewPasswordHashService()
 	AuthTokenService = services.NewAuthTokenService()
 	AuthService = services.NewAuthService(UserRepo, HashService, AuthTokenService)
 	UserFac = services.NewUserFactory(UserRepo, HashService)
+	WithDrawReqFac = services.NewWithDrawRequestFactory(ContractRepo, UserRepo)
 
 	//helpers
 	MakeSureAuthorized = helpers.NewMakeSureAuthorized(AuthTokenService, UserRepo)
