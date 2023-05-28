@@ -24,9 +24,6 @@ var (
 	//infra - db
 	DB *gorm.DB
 
-	//infra - valider
-	Validator *validator.Validate
-
 	//services - contract - db - repositories
 	UserRepo           repositories.IUserRepository
 	ContractRepo       repositories.IContractRepository
@@ -64,16 +61,16 @@ var (
 
 	//middleware
 	AuthorizedMiddleware middlewares.IAuthorizedMiddleware
+
+	//infra - valider
+	ValidCreateUserReqDep     *featValidations.ValidateCreateUserRequestDependency
+	Validator                 *validator.Validate
 )
 
 func init() {
 	//infra - db
 	db.Init()
 	DB = db.DB
-
-	//infra - valider
-	InitValidator()
-	Validator = valider.Validator
 
 	//services - contract - db - repositories
 	UserRepo = implRepositories.NewUserRepository(DB)
@@ -112,6 +109,11 @@ func init() {
 
 	//middleware
 	AuthorizedMiddleware = middlewares.NewAuthorizeMiddleware(AuthTokenService)
+
+	//infra - valider
+	ValidCreateUserReqDep = featValidations.NewValidateCreateUserRequestDependency(UserRepo)
+	InitValidator()
+	Validator = valider.Validator
 }
 
 func InitValidator() {
@@ -121,7 +123,7 @@ func InitValidator() {
 		Type any
 	}{
 		{
-			Fn:   featValidations.ValidateCreateUserRequest,
+			Fn:   featValidations.ValidateCreateUserRequest(ValidCreateUserReqDep),
 			Type: requests.CreateUserRequest{},
 		},
 	})
