@@ -18,6 +18,8 @@ func MountApiRouters(app *fiber.App) {
 		middlewares.BodyParserMiddleware[requests.SignInRequest],
 		initalizers.AuthController.SignIn,
 		middlewares.GlobalErrorHandleMiddleware)
+	// update sign-in response
+	// change password
 
 	// admin
 	admin := api.Group("/admin", initalizers.AuthorizedMiddleware.Handle(constants.AdminRole))
@@ -42,6 +44,16 @@ func MountApiRouters(app *fiber.App) {
 	planner.Post("/with-draws",
 		middlewares.BodyParserMiddleware[requests.CreateWithDrawRequest],
 		initalizers.WithDrawController.CreateWithDrawRequest)
+	// cancel requests
+
+	// supplier
+	// get my contracts
+	// get my with draw requests
+	// update with draw request to ready
+
+	// contractor
+	// get my with draw requests
+	// update with draw request to collected
 
 	planner.Use(middlewares.GlobalErrorHandleMiddleware)
 }

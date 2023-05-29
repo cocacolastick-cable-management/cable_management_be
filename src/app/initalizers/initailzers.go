@@ -1,11 +1,13 @@
 package initalizers
 
 import (
+	"github.com/cable_management/cable_management_be/config"
 	"github.com/cable_management/cable_management_be/src/app/controllers/admin_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/common_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/planner_controller"
 	"github.com/cable_management/cable_management_be/src/app/middlewares"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
+	"github.com/cable_management/cable_management_be/src/domain/contracts/email"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/helpers"
@@ -15,6 +17,7 @@ import (
 	featValidations "github.com/cable_management/cable_management_be/src/features/validations"
 	"github.com/cable_management/cable_management_be/src/infra/db"
 	implRepositories "github.com/cable_management/cable_management_be/src/infra/db/repositories"
+	implEmail "github.com/cable_management/cable_management_be/src/infra/email"
 	"github.com/cable_management/cable_management_be/src/infra/valider"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -23,6 +26,10 @@ import (
 var (
 	//infra - db
 	DB *gorm.DB
+
+	//services - contract - email
+	EmailConfig *email.EmailConfig
+	EmailHelper email.IEmailHelper
 
 	//services - contract - db - repositories
 	UserRepo           repositories.IUserRepository
@@ -75,6 +82,13 @@ func init() {
 	db.Init()
 	DB = db.DB
 
+	//infra - email
+	EmailConfig = email.NewEmailConfig(config.ENV.SmtpEmail, config.ENV.SmtpHost, config.ENV.SmtpPort, config.ENV.SmtpPassword)
+	EmailHelper = implEmail.NewEmailHelper(EmailConfig)
+
+	//services - contract - email
+	EmailConfig = email.NewEmailConfig(config.ENV.SmtpEmail, config.ENV.SmtpHost, config.ENV.SmtpPort, config.ENV.SmtpPassword)
+
 	//services - contract - db - repositories
 	UserRepo = implRepositories.NewUserRepository(DB)
 	ContractRepo = implRepositories.NewContractRepository(DB)
@@ -106,7 +120,7 @@ func init() {
 
 	//planner_usecase
 	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized, Validator)
-	CreateWithDrawCase = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, WithDrawReqHisRepo, ContractRepo, MakeSureAuthorized, Validator)
+	CreateWithDrawCase = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, WithDrawReqHisRepo, ContractRepo, MakeSureAuthorized, Validator, EmailHelper)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
