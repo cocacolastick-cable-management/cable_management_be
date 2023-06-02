@@ -26,3 +26,10 @@ func ValidationErrorResponse(ctx *fiber.Ctx, validError validator.ValidationErro
 		Errors:  ValidationErrorToStruct(validError),
 	})
 }
+
+func AccountIsDisableResponse(ctx *fiber.Ctx) error {
+	return ctx.Status(403).JSON(Response{
+		Message: "your account is disable",
+		Code:    "DA",
+	})
+}
