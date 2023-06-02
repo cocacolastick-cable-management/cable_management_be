@@ -2,8 +2,8 @@ package common_controllers
 
 import (
 	"github.com/cable_management/cable_management_be/src/app/utils"
-	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,8 +28,8 @@ func (ac AuthController) SignIn(ctx *fiber.Ctx) error {
 	request := ctx.Locals("body").(requests.SignInRequest)
 
 	//handle
-	var authData *services.AuthData
-	authData, err = ac.signInCase.Handle(request)
+	var response *responses.AuthResponse
+	response, err = ac.signInCase.Handle(request)
 
 	//check error
 	if err != nil {
@@ -42,6 +42,6 @@ func (ac AuthController) SignIn(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(utils.Response{
 		Message: "authenticate successfully",
 		Code:    "AS",
-		Payload: authData,
+		Payload: response,
 	})
 }
