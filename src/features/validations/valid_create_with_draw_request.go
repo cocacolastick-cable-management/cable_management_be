@@ -22,9 +22,9 @@ func ValidateCreateWithDrawRequest(dependency *ValidateCreateWithDrawRequestDepe
 
 		request := sl.Current().Interface().(requests.CreateWithDrawRequest)
 
-		matchingContract, _ := dependency.contractRepo.FindById(request.ContractId, []string{"WithDrawRequests"})
+		matchingContract, _ := dependency.contractRepo.FindByUniqueName(request.ContractUniqueName, []string{"WithDrawRequests"})
 		if matchingContract == nil {
-			sl.ReportError(request.ContractId, "ContractId", "ContractId", "not-found", "not found contract")
+			sl.ReportError(request.ContractUniqueName, "ContractUniqueName", "ContractUniqueName", "not-found", "not found contract")
 		} else {
 			cableStock, _ := matchingContract.CalCableStock()
 			if int(request.CableAmount) > cableStock {
@@ -36,9 +36,9 @@ func ValidateCreateWithDrawRequest(dependency *ValidateCreateWithDrawRequestDepe
 			sl.ReportError(request.CableAmount, "CableAmount", "CableAmount", "invalid", "invalid cable amount")
 		}
 
-		matchingContractor, _ := dependency.userRepo.FindById(request.ContractorId)
-		if matchingContractor == nil || matchingContractor.Role != constants.ContractorRole {
-			sl.ReportError(request.ContractorId, "ContractorId", "ContractorId", "not-found", "not found contractor")
+		matchingContractor, _ := dependency.userRepo.FindByEmailAndRole(request.ContractorEmail, constants.ContractorRole)
+		if matchingContractor == nil {
+			sl.ReportError(request.ContractorEmail, "ContractorEmail", "ContractorEmail", "not-found", "not found contractor")
 		}
 	}
 }
