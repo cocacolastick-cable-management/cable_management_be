@@ -24,9 +24,9 @@ func ValidateCreateUserRequest(dependency *ValidateCreateUserRequestDependency) 
 			sl.ReportError(request.Role, "Role", "Role", "invalid", "invalid role")
 		}
 
-		if !validations.ValidatePassword(request.Password) {
-			sl.ReportError(request.Password, "Password", "Password", "invalid", "invalid password format")
-		}
+		//if !validations.ValidatePassword(request.Password) {
+		//	sl.ReportError(request.Password, "Password", "Password", "invalid", "invalid password format")
+		//}
 
 		//userRepo := repositories.NewUserRepository(db.DB)
 		matchingUser, _ := dependency.userRepo.FindByEmail(request.Email)
