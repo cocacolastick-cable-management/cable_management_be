@@ -6,9 +6,12 @@ import (
 	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func MountApiRouters(app *fiber.App) {
+
+	app.Use(cors.New())
 
 	api := app.Group("api/")
 
@@ -18,7 +21,6 @@ func MountApiRouters(app *fiber.App) {
 		middlewares.BodyParserMiddleware[requests.SignInRequest],
 		initalizers.AuthController.SignIn,
 		middlewares.GlobalErrorHandleMiddleware)
-	// update sign-in response
 	// change password
 
 	// admin
@@ -26,11 +28,11 @@ func MountApiRouters(app *fiber.App) {
 
 	admin.Post("/users",
 		middlewares.BodyParserMiddleware[requests.CreateUserRequest],
-		initalizers.UserController.CreateUser)
+		initalizers.UserController.CreateUser) // should generate password
 
 	admin.Get("/users",
-		middlewares.QueryParserMiddleware[requests.PaginationRequest],
 		initalizers.UserController.GetUserList)
+	//feat: disable account instead of remove it
 
 	admin.Use(middlewares.GlobalErrorHandleMiddleware)
 
@@ -38,8 +40,10 @@ func MountApiRouters(app *fiber.App) {
 	planner := api.Group("/planner", initalizers.AuthorizedMiddleware.Handle(constants.PlannerRole))
 
 	planner.Get("/contracts",
-		middlewares.QueryParserMiddleware[requests.PaginationRequest],
 		initalizers.ContractController.GetContractList)
+
+	planner.Get("/with-draws",
+		initalizers.WithDrawController.GetWithDrawList)
 
 	planner.Post("/with-draws",
 		middlewares.BodyParserMiddleware[requests.CreateWithDrawRequest],
