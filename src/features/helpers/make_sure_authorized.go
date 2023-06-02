@@ -36,6 +36,10 @@ func (msa MakeSureAuthorized) Handle(accessToken string, targetRoles ...string) 
 		return nil, errs.ErrAuthFailed
 	}
 
+	if !matchingUser.IsActive {
+		return nil, errs.ErrDisableAccount
+	}
+
 	if !slices.Contains(targetRoles, matchingUser.Role) || !(matchingUser.Role == claims.Role) {
 		return nil, errs.ErrUnAuthorized
 	}
