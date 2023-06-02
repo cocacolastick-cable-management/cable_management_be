@@ -3,6 +3,7 @@ package planner_usecases
 import (
 	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
+	"github.com/cable_management/cable_management_be/src/domain/contracts/email"
 	"github.com/cable_management/cable_management_be/src/domain/entities"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
@@ -22,10 +23,11 @@ type CreateWithDrawCase struct {
 	contractRepo       repositories.IContractRepository
 	makeSureAuthorized helpers.IMakeSureAuthorized
 	validator          *validator.Validate
+	emailHelper        email.IEmailHelper
 }
 
-func NewCreateWithDrawCase(withDrawFac services.IWithDrawRequestFactory, withDrawRepo repositories.IWithDrawRequestRepository, historyRepo repositories.IWithDrawRequestHistoryRepository, contractRepo repositories.IContractRepository, makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate) *CreateWithDrawCase {
-	return &CreateWithDrawCase{withDrawFac: withDrawFac, withDrawRepo: withDrawRepo, historyRepo: historyRepo, contractRepo: contractRepo, makeSureAuthorized: makeSureAuthorized, validator: validator}
+func NewCreateWithDrawCase(withDrawFac services.IWithDrawRequestFactory, withDrawRepo repositories.IWithDrawRequestRepository, historyRepo repositories.IWithDrawRequestHistoryRepository, contractRepo repositories.IContractRepository, makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate, emailHelper email.IEmailHelper) *CreateWithDrawCase {
+	return &CreateWithDrawCase{withDrawFac: withDrawFac, withDrawRepo: withDrawRepo, historyRepo: historyRepo, contractRepo: contractRepo, makeSureAuthorized: makeSureAuthorized, validator: validator, emailHelper: emailHelper}
 }
 
 func (cwd CreateWithDrawCase) Handle(accessToken string, request requests.CreateWithDrawRequest) (*responses.WithDrawResponse, error) {
@@ -43,11 +45,19 @@ func (cwd CreateWithDrawCase) Handle(accessToken string, request requests.Create
 		return nil, err
 	}
 
-	newWithDraw, _ := cwd.withDrawFac.CreateRequest(request.CableAmount, request.ContractId, request.ContractorId)
+	newWithDraw, _ := cwd.withDrawFac.CreateRequest(request.CableAmount, request.ContractUniqueName, request.ContractorEmail)
+	//TODO should I create a WithDrawRequestFactory?
 	newHistory := entities.NewWithDrawRequestHistory(constants.WD_CreateAction, newWithDraw.CreatedAt, newWithDraw.Status, claims.AccountId, newWithDraw.Id)
-
 	_ = cwd.withDrawRepo.Insert(newWithDraw)
 	_ = cwd.historyRepo.Insert(newHistory)
+
+	//go func() {
+	//	_ = cwd.emailHelper.SendEmail(&email.EmailData{
+	//		To:      "vuu@yopmail.com",
+	//		Subject: "hello",
+	//		Body:    "you stupid as fuck",
+	//	})
+	//}()
 
 	newWithDraw, _ = cwd.withDrawRepo.FindById(newWithDraw.Id, []string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
 
