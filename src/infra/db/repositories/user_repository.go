@@ -59,13 +59,13 @@ func (ur UserRepository) Insert(user *entities.User) error {
 	return result.Error
 }
 
-func (ur UserRepository) FindManyByRole(role string, withs []string) ([]*entities.User, error) {
+func (ur UserRepository) FindManyByRoles(roles []string, withs []string) ([]*entities.User, error) {
 
 	var userList []*entities.User
 	query := ur.db
 	for _, with := range withs {
 		query = query.Preload(with)
 	}
-	query.Find(&userList, "users.role = ?", role)
+	query.Find(&userList, "users.role IN ?", roles)
 	return userList, nil
 }
