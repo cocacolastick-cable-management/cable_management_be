@@ -10,6 +10,7 @@ import (
 type Contract struct {
 	AbstractEntity
 
+	UniqueName  string `gorm:"unique;type:varchar"`
 	StartDay    time.Time
 	EndDay      time.Time
 	CableAmount uint
