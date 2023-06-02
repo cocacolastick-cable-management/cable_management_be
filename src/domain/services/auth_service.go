@@ -11,11 +11,11 @@ type IAuthService interface {
 
 type AuthService struct {
 	userRepo     repositories.IUserRepository
-	hashService  IPasswordHashService
+	hashService  IPasswordService
 	tokenService IAuthTokenService
 }
 
-func NewAuthService(userRepo repositories.IUserRepository, hashService IPasswordHashService, tokenService IAuthTokenService) *AuthService {
+func NewAuthService(userRepo repositories.IUserRepository, hashService IPasswordService, tokenService IAuthTokenService) *AuthService {
 	return &AuthService{userRepo: userRepo, hashService: hashService, tokenService: tokenService}
 }
 
