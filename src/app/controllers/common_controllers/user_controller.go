@@ -1,4 +1,4 @@
-package admin_controllers
+package common_controllers
 
 import (
 	"github.com/cable_management/cable_management_be/src/app/utils"
@@ -7,32 +7,33 @@ import (
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
 	"github.com/gofiber/fiber/v2"
+	"strings"
 )
 
 type IUserController interface {
-	CreateUser(ctx *fiber.Ctx) error
+	GetUserList(ctx *fiber.Ctx) error
 }
 
 type UserController struct {
-	createUserCase admin_usecases.ICreateUserCase
+	getUserList admin_usecases.IGetUserListCase
 }
 
-func NewUserController(createUserCase admin_usecases.ICreateUserCase) *UserController {
-	return &UserController{createUserCase: createUserCase}
+func NewUserController(getUserList admin_usecases.IGetUserListCase) *UserController {
+	return &UserController{getUserList: getUserList}
 }
 
-func (uc UserController) CreateUser(ctx *fiber.Ctx) error {
+func (uc UserController) GetUserList(ctx *fiber.Ctx) error {
 
 	var err error
 
 	//parse request
 	accessToken := ctx.Locals(services.AccessTokenTypeName).(string)
-
-	request := ctx.Locals("body").(requests.CreateUserRequest)
+	roles := strings.Split(ctx.Query("roles"), ",")
+	request := requests.GetUserListRequest{Roles: roles}
 
 	//handle
-	var userRes *responses.UserResponse
-	userRes, err = uc.createUserCase.Handle(accessToken, request)
+	var userListRes []*responses.UserResponse
+	userListRes, err = uc.getUserList.Handle(accessToken, request)
 
 	//check error
 	if err != nil {
@@ -42,9 +43,9 @@ func (uc UserController) CreateUser(ctx *fiber.Ctx) error {
 	}
 
 	// return happy result
-	return ctx.Status(201).JSON(utils.Response{
+	return ctx.Status(200).JSON(utils.Response{
 		Message: "Success",
 		Code:    "OK",
-		Payload: userRes,
+		Payload: userListRes,
 	})
 }

@@ -66,10 +66,11 @@ var (
 	GetWithDrawListCase planner_usecases.IGetWithDrawListCase
 
 	//common_controllers
-	AuthController common_controllers.IAuthController
+	AuthController        common_controllers.IAuthController
+	CommonUserControllers common_controllers.IUserController
 
 	//admin_controllers
-	UserController admin_controllers.IUserController
+	AdminUserController admin_controllers.IUserController
 
 	//planner_controller
 	ContractController planner_controller.IContractController
@@ -128,9 +129,10 @@ func init() {
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
+	CommonUserControllers = common_controllers.NewUserController(GetUserListCase)
 
 	//admin_controllers
-	UserController = admin_controllers.NewUserController(CreateUserCase, GetUserListCase)
+	AdminUserController = admin_controllers.NewUserController(CreateUserCase)
 
 	//planner_controllers
 	ContractController = planner_controller.NewContractController(GetContractListCase)

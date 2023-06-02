@@ -16,11 +16,16 @@ func MountApiRouters(app *fiber.App) {
 	api := app.Group("api/")
 
 	// common
-	common := api.Group("/")
+	common := api.Group("/common")
 	common.Post("/sign-in",
 		middlewares.BodyParserMiddleware[requests.SignInRequest],
 		initalizers.AuthController.SignIn,
 		middlewares.GlobalErrorHandleMiddleware)
+
+	common.Get("/users",
+		initalizers.AuthorizedMiddleware.Handle(constants.AdminRole, constants.PlannerRole),
+		initalizers.CommonUserControllers.GetUserList)
+
 	// change password
 
 	// admin
@@ -28,10 +33,8 @@ func MountApiRouters(app *fiber.App) {
 
 	admin.Post("/users",
 		middlewares.BodyParserMiddleware[requests.CreateUserRequest],
-		initalizers.UserController.CreateUser) // should generate password
+		initalizers.AdminUserController.CreateUser) // should generate password
 
-	admin.Get("/users",
-		initalizers.UserController.GetUserList)
 	//feat: disable account instead of remove it
 
 	admin.Use(middlewares.GlobalErrorHandleMiddleware)
@@ -48,6 +51,8 @@ func MountApiRouters(app *fiber.App) {
 	planner.Post("/with-draws",
 		middlewares.BodyParserMiddleware[requests.CreateWithDrawRequest],
 		initalizers.WithDrawController.CreateWithDrawRequest)
+	// get supplier list
+	// get contractor list
 	// cancel requests
 
 	// supplier
