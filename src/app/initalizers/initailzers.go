@@ -43,11 +43,12 @@ var (
 	Validator                 *validator.Validate
 
 	//services
-	HashService      services.IPasswordHashService
+	PasswordService  services.IPasswordService
 	AuthTokenService services.IAuthTokenService
 	AuthService      services.IAuthService
 	UserFac          services.IUserFactory
 	WithDrawReqFac   services.IWithDrawRequestFactory
+	EmailService     services.IEmailService
 
 	//helpers
 	MakeSureAuthorized helpers.IMakeSureAuthorized
@@ -62,6 +63,7 @@ var (
 	//planner_usecases
 	GetContractListCase planner_usecases.IGetContractListCase
 	CreateWithDrawCase  planner_usecases.ICreateWithDrawCase
+	GetWithDrawListCase planner_usecases.IGetWithDrawListCase
 
 	//common_controllers
 	AuthController common_controllers.IAuthController
@@ -102,25 +104,27 @@ func init() {
 	Validator = valider.Validator
 
 	//services
-	HashService = services.NewPasswordHashService()
+	PasswordService = services.NewPasswordHashService()
 	AuthTokenService = services.NewAuthTokenService()
-	AuthService = services.NewAuthService(UserRepo, HashService, AuthTokenService)
-	UserFac = services.NewUserFactory(UserRepo, HashService)
+	AuthService = services.NewAuthService(UserRepo, PasswordService, AuthTokenService)
+	UserFac = services.NewUserFactory(UserRepo, PasswordService)
 	WithDrawReqFac = services.NewWithDrawRequestFactory(ContractRepo, UserRepo)
+	EmailService = services.NewEmailService(EmailHelper)
 
 	//helpers
 	MakeSureAuthorized = helpers.NewMakeSureAuthorized(AuthTokenService, UserRepo)
 
 	//common_usecases
-	SignInCase = common_usecases.NewSignInCase(AuthService, Validator)
+	SignInCase = common_usecases.NewSignInCase(UserRepo, PasswordService, AuthTokenService, Validator)
 
 	//admin_usecases
-	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized)
+	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized, PasswordService, EmailService)
 	GetUserListCase = admin_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
 
 	//planner_usecase
-	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized, Validator)
+	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized)
 	CreateWithDrawCase = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, WithDrawReqHisRepo, ContractRepo, MakeSureAuthorized, Validator, EmailHelper)
+	GetWithDrawListCase = planner_usecases.NewGetWithDrawListCase(MakeSureAuthorized, WithDrawReqRepo)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
@@ -130,11 +134,10 @@ func init() {
 
 	//planner_controllers
 	ContractController = planner_controller.NewContractController(GetContractListCase)
-	WithDrawController = planner_controller.NewWithDrawController(CreateWithDrawCase)
+	WithDrawController = planner_controller.NewWithDrawController(CreateWithDrawCase, GetWithDrawListCase)
 
 	//middleware
 	AuthorizedMiddleware = middlewares.NewAuthorizeMiddleware(AuthTokenService)
-
 }
 
 func InitValidator() {
