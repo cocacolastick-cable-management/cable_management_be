@@ -3,28 +3,24 @@ package planner_usecases
 import (
 	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
-	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/helpers"
-	"github.com/go-playground/validator/v10"
-	"time"
 )
 
 type IGetContractListCase interface {
-	Handle(accessToken string, request requests.PaginationRequest) ([]*responses.ContractResponse, error)
+	Handle(accessToken string) ([]*responses.ContractResponse, error)
 }
 
 type GetContractListCase struct {
 	contractRepo       repositories.IContractRepository
 	makeSureAuthorized helpers.IMakeSureAuthorized
-	validator          *validator.Validate
 }
 
-func NewGetContractListCase(contractRepo repositories.IContractRepository, makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate) *GetContractListCase {
-	return &GetContractListCase{contractRepo: contractRepo, makeSureAuthorized: makeSureAuthorized, validator: validator}
+func NewGetContractListCase(contractRepo repositories.IContractRepository, makeSureAuthorized helpers.IMakeSureAuthorized) *GetContractListCase {
+	return &GetContractListCase{contractRepo: contractRepo, makeSureAuthorized: makeSureAuthorized}
 }
 
-func (gcl GetContractListCase) Handle(accessToken string, request requests.PaginationRequest) ([]*responses.ContractResponse, error) {
+func (gcl GetContractListCase) Handle(accessToken string) ([]*responses.ContractResponse, error) {
 
 	var err error
 
@@ -33,27 +29,12 @@ func (gcl GetContractListCase) Handle(accessToken string, request requests.Pagin
 		return nil, err
 	}
 
-	err = gcl.validator.Struct(request)
-	if err != nil {
-		return nil, err
-	}
-
-	contractList, _ := gcl.contractRepo.GetList(request.Page, request.Size, request.OrderBy, request.LastTimestamp, []string{"Supplier", "WithDrawRequests"})
+	contractList, _ := gcl.contractRepo.GetList([]string{"Supplier", "WithDrawRequests"})
 
 	response := make([]*responses.ContractResponse, len(contractList))
 	for i, contract := range contractList {
-
-		stock, _ := contract.CalCableStock()
-		response[i] = &responses.ContractResponse{
-			Id:           contract.Id,
-			SupplierId:   contract.SupplierId,
-			SupplierName: contract.Supplier.DisplayName,
-			CableAmount:  contract.CableAmount,
-			Stock:        stock,
-			StartDay:     time.Time{},
-			EndDay:       time.Time{},
-			CreatedAt:    time.Time{},
-		}
+		contractRes, _ := helpers.MapContractResponse(contract)
+		response[i] = contractRes
 	}
 
 	return response, nil

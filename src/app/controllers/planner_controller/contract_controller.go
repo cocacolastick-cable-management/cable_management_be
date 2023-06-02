@@ -3,7 +3,6 @@ package planner_controller
 import (
 	"github.com/cable_management/cable_management_be/src/app/utils"
 	"github.com/cable_management/cable_management_be/src/domain/services"
-	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/usecases/planner_usecases"
 	"github.com/gofiber/fiber/v2"
@@ -27,11 +26,10 @@ func (cc ContractController) GetContractList(ctx *fiber.Ctx) error {
 
 	//parse request
 	accessToken := ctx.Locals(services.AccessTokenTypeName).(string)
-	query := ctx.Locals("query").(requests.PaginationRequest)
 
 	//handle
 	var contractListRes []*responses.ContractResponse
-	contractListRes, err = cc.getContractListCase.Handle(accessToken, query)
+	contractListRes, err = cc.getContractListCase.Handle(accessToken)
 
 	//check error
 	if err != nil {
