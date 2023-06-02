@@ -30,6 +30,11 @@ func (gul GetUserListCase) Handle(accessToken string, request requests.GetUserLi
 		return nil, err
 	}
 
+	// TODO solve this shoot
+	//if claims.Role == constants.PlannerRole {
+	//	request.Roles = slices.(request.Roles)
+	//}
+
 	userList, _ := gul.userRepo.FindManyByRoles(request.Roles, nil)
 
 	response := make([]*responses.UserResponse, len(userList))
