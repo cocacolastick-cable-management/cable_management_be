@@ -24,5 +24,9 @@ func GlobalErrorHandleMiddleware(ctx *fiber.Ctx) error {
 		return utils.UnAuthorizedResponse(ctx)
 	}
 
+	if errors.Is(err, errs.ErrDisableAccount) {
+		return utils.AccountIsDisableResponse(ctx)
+	}
+
 	return ctx.Status(500).JSON(err)
 }
