@@ -32,14 +32,8 @@ func (gul GetUserListCase) Handle(accessToken string) ([]*responses.UserResponse
 
 	response := make([]*responses.UserResponse, len(userList))
 	for i, user := range userList {
-		response[i] = &responses.UserResponse{
-			Id:          user.Id,
-			Role:        user.Role,
-			DisplayName: user.DisplayName,
-			Email:       user.Email,
-			IsActive:    user.IsActive,
-			CreatedAt:   user.CreatedAt.UTC(),
-		}
+		userRes, _ := helpers.MapUserResponse(user)
+		response[i] = userRes
 	}
 
 	return response, nil
