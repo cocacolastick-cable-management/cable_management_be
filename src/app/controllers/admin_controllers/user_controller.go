@@ -57,11 +57,10 @@ func (uc UserController) GetUserList(ctx *fiber.Ctx) error {
 
 	//parse request
 	accessToken := ctx.Locals(services.AccessTokenTypeName).(string)
-	query := ctx.Locals("query").(requests.PaginationRequest)
 
 	//handle
 	var userListRes []*responses.UserResponse
-	userListRes, err = uc.getUserList.Handle(accessToken, query)
+	userListRes, err = uc.getUserList.Handle(accessToken)
 
 	//check error
 	if err != nil {

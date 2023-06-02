@@ -3,7 +3,6 @@ package repositories
 import (
 	"github.com/cable_management/cable_management_be/src/domain/entities"
 	"github.com/google/uuid"
-	"time"
 )
 
 type IUserRepository interface {
@@ -11,5 +10,5 @@ type IUserRepository interface {
 	FindById(id uuid.UUID) (*entities.User, error)
 	FindByEmail(email string) (*entities.User, error)
 	FindByEmailAndRole(email, role string) (*entities.User, error)
-	GetList(page uint, size uint, orderBy *string, lastTimestamp *time.Time) ([]*entities.User, error)
+	GetList(with *string) ([]*entities.User, error)
 }
