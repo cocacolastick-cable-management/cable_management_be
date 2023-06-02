@@ -10,5 +10,6 @@ type UserResponse struct {
 	Role        string
 	DisplayName string
 	Email       string
+	IsActive    bool
 	CreatedAt   time.Time
 }
