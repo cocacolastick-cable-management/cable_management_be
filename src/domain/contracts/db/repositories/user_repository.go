@@ -11,4 +11,5 @@ type IUserRepository interface {
 	FindByEmail(email string) (*entities.User, error)
 	FindByEmailAndRole(email, role string) (*entities.User, error)
 	GetList(with *string) ([]*entities.User, error)
+	FindManyByRole(role string, withs []string) ([]*entities.User, error)
 }
