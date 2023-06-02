@@ -20,10 +20,12 @@ type CreateUserCase struct {
 	userRepo           repositories.IUserRepository
 	validator          *validator.Validate
 	makeSureAuthorized helpers.IMakeSureAuthorized
+	passService        services.IPasswordService
+	emailService       services.IEmailService
 }
 
-func NewCreateUserCase(tokenService services.IAuthTokenService, userFac services.IUserFactory, userRepo repositories.IUserRepository, validator *validator.Validate, makeSureAuthorized helpers.IMakeSureAuthorized) *CreateUserCase {
-	return &CreateUserCase{tokenService: tokenService, userFac: userFac, userRepo: userRepo, validator: validator, makeSureAuthorized: makeSureAuthorized}
+func NewCreateUserCase(tokenService services.IAuthTokenService, userFac services.IUserFactory, userRepo repositories.IUserRepository, validator *validator.Validate, makeSureAuthorized helpers.IMakeSureAuthorized, passService services.IPasswordService, emailService services.IEmailService) *CreateUserCase {
+	return &CreateUserCase{tokenService: tokenService, userFac: userFac, userRepo: userRepo, validator: validator, makeSureAuthorized: makeSureAuthorized, passService: passService, emailService: emailService}
 }
 
 func (cac CreateUserCase) Handle(accessToken string, request requests.CreateUserRequest) (*responses.UserResponse, error) {
@@ -38,14 +40,13 @@ func (cac CreateUserCase) Handle(accessToken string, request requests.CreateUser
 		return nil, err
 	}
 
-	newUser, _ := cac.userFac.CreateUser(request.Role, request.DisplayName, request.Email, request.Password)
+	password := cac.passService.GenerateRandomPassword(8)
+	newUser, _ := cac.userFac.CreateUser(request.Role, request.DisplayName, request.Email, password)
 	_ = cac.userRepo.Insert(newUser)
 
-	return &responses.UserResponse{
-		Id:          newUser.Id,
-		DisplayName: newUser.DisplayName,
-		Role:        newUser.Role,
-		Email:       newUser.Email,
-		CreatedAt:   newUser.CreatedAt,
-	}, nil
+	go func() {
+		_ = cac.emailService.SendEmailNewUser(newUser.Role, newUser.Email, password)
+	}()
+
+	return helpers.MapUserResponse(newUser)
 }
