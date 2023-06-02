@@ -18,15 +18,18 @@ func MapWithDrawToResponse(withDraw *entities.WithDrawRequest) (*responses.WithD
 	}
 
 	return &responses.WithDrawResponse{
-		Id:             withDraw.Id,
-		SupplierId:     withDraw.Contract.SupplierId,
-		SupplierName:   withDraw.Contract.Supplier.DisplayName,
-		ContractorId:   withDraw.ContractorId,
-		ContractorName: withDraw.Contractor.DisplayName,
-		ContractId:     withDraw.ContractId,
-		CableAmount:    withDraw.CableAmount,
-		Status:         withDraw.Status,
-		CreatedAt:      withDraw.CreatedAt.UTC(),
-		Histories:      historyListRes,
+		Id:                 withDraw.Id,
+		SupplierId:         withDraw.Contract.SupplierId,
+		SupplierName:       withDraw.Contract.Supplier.DisplayName,
+		SupplierEmail:      withDraw.Contract.Supplier.Email,
+		ContractorId:       withDraw.ContractorId,
+		ContractorName:     withDraw.Contractor.DisplayName,
+		ContractorEmail:    withDraw.Contractor.Email,
+		ContractId:         withDraw.ContractId,
+		ContractUniqueName: withDraw.Contract.UniqueName,
+		CableAmount:        withDraw.CableAmount,
+		Status:             withDraw.Status,
+		CreatedAt:          withDraw.CreatedAt.UTC(),
+		Histories:          historyListRes,
 	}, nil
 }
