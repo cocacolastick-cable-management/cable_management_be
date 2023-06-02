@@ -14,10 +14,10 @@ type IUserFactory interface {
 
 type UserFactory struct {
 	userRepo    repositories.IUserRepository
-	hashService IPasswordHashService
+	hashService IPasswordService
 }
 
-func NewUserFactory(userRepo repositories.IUserRepository, hashService IPasswordHashService) *UserFactory {
+func NewUserFactory(userRepo repositories.IUserRepository, hashService IPasswordService) *UserFactory {
 	return &UserFactory{userRepo: userRepo, hashService: hashService}
 }
 
@@ -38,5 +38,5 @@ func (uf UserFactory) CreateUser(role, displayName, email, password string) (*en
 
 	passwordHash, _ := uf.hashService.Hash(password)
 
-	return entities.NewUser(role, displayName, email, passwordHash, time.Now()), nil
+	return entities.NewUser(role, displayName, email, passwordHash, true, time.Now()), nil
 }
