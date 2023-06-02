@@ -11,14 +11,16 @@ import (
 
 type IWithDrawController interface {
 	CreateWithDrawRequest(ctx *fiber.Ctx) error
+	GetWithDrawList(ctx *fiber.Ctx) error
 }
 
 type WithDrawController struct {
-	createWithDrawCase planner_usecases.ICreateWithDrawCase
+	createWithDrawCase  planner_usecases.ICreateWithDrawCase
+	getWithDrawListCase planner_usecases.IGetWithDrawListCase
 }
 
-func NewWithDrawController(createWithDrawCase planner_usecases.ICreateWithDrawCase) *WithDrawController {
-	return &WithDrawController{createWithDrawCase: createWithDrawCase}
+func NewWithDrawController(createWithDrawCase planner_usecases.ICreateWithDrawCase, getWithDrawListCase planner_usecases.IGetWithDrawListCase) *WithDrawController {
+	return &WithDrawController{createWithDrawCase: createWithDrawCase, getWithDrawListCase: getWithDrawListCase}
 }
 
 func (wdc WithDrawController) CreateWithDrawRequest(ctx *fiber.Ctx) error {
@@ -45,5 +47,30 @@ func (wdc WithDrawController) CreateWithDrawRequest(ctx *fiber.Ctx) error {
 		Message: "Success",
 		Code:    "OK",
 		Payload: withDrawRes,
+	})
+}
+
+func (wdc WithDrawController) GetWithDrawList(ctx *fiber.Ctx) error {
+
+	var err error
+
+	//parse request
+	accessToken := ctx.Locals(services.AccessTokenTypeName).(string)
+
+	//handle
+	var withDrawListRes []*responses.WithDrawResponse
+	withDrawListRes, err = wdc.getWithDrawListCase.Handle(accessToken)
+
+	//check error
+	if err != nil {
+		//check for other cases before pass to global error handler
+		ctx.Locals("err", err)
+		return ctx.Next()
+	}
+
+	return ctx.Status(200).JSON(utils.Response{
+		Message: "Success",
+		Code:    "OK",
+		Payload: withDrawListRes,
 	})
 }

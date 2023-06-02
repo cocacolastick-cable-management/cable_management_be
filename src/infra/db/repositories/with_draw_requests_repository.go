@@ -2,10 +2,9 @@ package repositories
 
 import (
 	"github.com/cable_management/cable_management_be/src/domain/entities"
-	"github.com/cable_management/cable_management_be/src/infra/db/utils"
+	"github.com/cable_management/cable_management_be/src/infra/db"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type WithDrawRequestRepository struct {
@@ -33,13 +32,13 @@ func (cr WithDrawRequestRepository) FindById(id uuid.UUID, withs []string) (*ent
 	return matchingWithDrawRequest, nil
 }
 
-func (cr WithDrawRequestRepository) GetList(page uint, size uint, orderBy *string, lastTimestamp *time.Time, withs []string) ([]*entities.WithDrawRequest, error) {
+func (cr WithDrawRequestRepository) GetList(withs []string) ([]*entities.WithDrawRequest, error) {
 
-	withDrawReqList := make([]*entities.WithDrawRequest, size)
-	query := utils.Pagination(cr.db, page, size, orderBy, lastTimestamp)
+	var withDrawReqList []*entities.WithDrawRequest
+	query := db.DB
 
 	for _, with := range withs {
-		query = query.Joins(with)
+		query = query.Preload(with)
 	}
 
 	query.Find(&withDrawReqList)
