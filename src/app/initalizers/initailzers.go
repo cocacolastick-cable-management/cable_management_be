@@ -54,11 +54,11 @@ var (
 	MakeSureAuthorized helpers.IMakeSureAuthorized
 
 	//common_usecases
-	SignInCase common_usecases.ISignInCase
+	SignInCase      common_usecases.ISignInCase
+	GetUserListCase common_usecases.IGetUserListCase
 
 	//admin_usecases
-	CreateUserCase  admin_usecases.ICreateUserCase
-	GetUserListCase common_usecases.IGetUserListCase
+	CreateUserCase admin_usecases.ICreateUserCase
 
 	//planner_usecases
 	GetContractListCase planner_usecases.IGetContractListCase
@@ -117,10 +117,10 @@ func init() {
 
 	//common_usecases
 	SignInCase = common_usecases.NewSignInCase(UserRepo, PasswordService, AuthTokenService, Validator)
+	GetUserListCase = common_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
 
 	//admin_usecases
 	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized, PasswordService, EmailService)
-	GetUserListCase = common_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
 
 	//planner_usecase
 	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized)
