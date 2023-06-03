@@ -23,9 +23,13 @@ func NewWithDrawRequestFactory(contractRepo repositories.IContractRepository, us
 
 func (wdf WithDrawRequestFactory) CreateRequest(cableAmount uint, ContractUniqueName string, contractorEmail string) (*entities.WithDrawRequest, error) {
 
-	matchingContract, _ := wdf.contractRepo.FindByUniqueName(ContractUniqueName, []string{"WithDrawRequests"})
+	matchingContract, _ := wdf.contractRepo.FindByUniqueName(ContractUniqueName, []string{"WithDrawRequests", "Supplier"})
 	if matchingContract == nil {
 		return nil, errs.ErrNotFoundContract
+	}
+
+	if !matchingContract.Supplier.IsActive {
+		return nil, errs.ErrDisableAccount
 	}
 
 	cableStock, _ := matchingContract.CalCableStock()
