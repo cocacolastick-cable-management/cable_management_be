@@ -33,3 +33,10 @@ func AccountIsDisableResponse(ctx *fiber.Ctx) error {
 		Code:    "DA",
 	})
 }
+
+func NotFoundResponse(ctx *fiber.Ctx) error {
+	return ctx.Status(404).JSON(Response{
+		Message: "Not found",
+		Code:    "NF",
+	})
+}
