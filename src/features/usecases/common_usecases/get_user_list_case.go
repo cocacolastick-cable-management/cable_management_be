@@ -1,4 +1,4 @@
-package admin_usecases
+package common_usecases
 
 import (
 	"github.com/cable_management/cable_management_be/src/domain/constants"

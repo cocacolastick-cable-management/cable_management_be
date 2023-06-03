@@ -58,7 +58,7 @@ var (
 
 	//admin_usecases
 	CreateUserCase  admin_usecases.ICreateUserCase
-	GetUserListCase admin_usecases.IGetUserListCase
+	GetUserListCase common_usecases.IGetUserListCase
 
 	//planner_usecases
 	GetContractListCase planner_usecases.IGetContractListCase
@@ -120,7 +120,7 @@ func init() {
 
 	//admin_usecases
 	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized, PasswordService, EmailService)
-	GetUserListCase = admin_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
+	GetUserListCase = common_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
 
 	//planner_usecase
 	GetContractListCase = planner_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized)

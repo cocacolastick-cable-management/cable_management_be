@@ -5,7 +5,7 @@ import (
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
-	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
+	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
 	"github.com/gofiber/fiber/v2"
 	"strings"
 )
@@ -15,10 +15,10 @@ type IUserController interface {
 }
 
 type UserController struct {
-	getUserList admin_usecases.IGetUserListCase
+	getUserList common_usecases.IGetUserListCase
 }
 
-func NewUserController(getUserList admin_usecases.IGetUserListCase) *UserController {
+func NewUserController(getUserList common_usecases.IGetUserListCase) *UserController {
 	return &UserController{getUserList: getUserList}
 }
 
