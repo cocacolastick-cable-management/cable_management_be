@@ -29,7 +29,7 @@ func (gcl GetContractListCase) Handle(accessToken string) ([]*responses.Contract
 		return nil, err
 	}
 
-	contractList, _ := gcl.contractRepo.GetList([]string{"Supplier", "WithDrawRequests"})
+	contractList, _ := gcl.contractRepo.GetActiveList([]string{"Supplier", "WithDrawRequests"})
 
 	response := make([]*responses.ContractResponse, len(contractList))
 	for i, contract := range contractList {

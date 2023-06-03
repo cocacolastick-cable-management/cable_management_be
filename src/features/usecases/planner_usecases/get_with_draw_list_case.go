@@ -29,7 +29,7 @@ func (gwd GetWithDrawListCase) Handle(accessToken string) ([]*responses.WithDraw
 		return nil, err
 	}
 
-	withDrawList, _ := gwd.withDrawRepo.GetList([]string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
+	withDrawList, _ := gwd.withDrawRepo.GetActiveList([]string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
 
 	response := make([]*responses.WithDrawResponse, len(withDrawList))
 	for i, withDraw := range withDrawList {
