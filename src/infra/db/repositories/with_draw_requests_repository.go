@@ -53,3 +53,8 @@ func (cr WithDrawRequestRepository) Insert(withDrawReq *entities.WithDrawRequest
 	result := cr.db.Create(withDrawReq)
 	return result.Error
 }
+
+func (cr WithDrawRequestRepository) Save(withDrawReq *entities.WithDrawRequest) error {
+	result := cr.db.Save(withDrawReq)
+	return result.Error
+}
