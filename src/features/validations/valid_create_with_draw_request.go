@@ -22,8 +22,10 @@ func ValidateCreateWithDrawRequest(dependency *ValidateCreateWithDrawRequestDepe
 
 		request := sl.Current().Interface().(requests.CreateWithDrawRequest)
 
-		matchingContract, _ := dependency.contractRepo.FindByUniqueName(request.ContractUniqueName, []string{"WithDrawRequests"})
+		matchingContract, _ := dependency.contractRepo.FindByUniqueName(request.ContractUniqueName, []string{"WithDrawRequests", "Supplier"})
 		if matchingContract == nil {
+			sl.ReportError(request.ContractUniqueName, "ContractUniqueName", "ContractUniqueName", "not-found", "not found contract")
+		} else if !matchingContract.Supplier.IsActive {
 			sl.ReportError(request.ContractUniqueName, "ContractUniqueName", "ContractUniqueName", "not-found", "not found contract")
 		} else {
 			cableStock, _ := matchingContract.CalCableStock()
