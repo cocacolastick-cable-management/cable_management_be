@@ -80,6 +80,6 @@ func (cr ContractRepository) FindManyBySupplierId(supplierId uuid.UUID, withs []
 		query = query.Preload(with)
 	}
 
-	query.Find(&contractList, "contracts.id = ?", supplierId)
+	query.Find(&contractList, "contracts.supplier_id = ?", supplierId)
 	return contractList, nil
 }
