@@ -32,6 +32,8 @@ func MountApiRouters(app *fiber.App) {
 		initalizers.CommonWithDrawController.UpdateWithDrawStatusCase)
 	// change password
 	// reset password
+	
+	common.Use(middlewares.GlobalErrorHandleMiddleware)
 
 	// admin
 	admin := api.Group("/admin", initalizers.AuthorizedMiddleware.Handle(constants.AdminRole))
