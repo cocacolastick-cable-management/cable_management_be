@@ -32,3 +32,23 @@ func MapContractResponse(contract *entities.Contract) (*responses.ContractRespon
 
 	return response, nil
 }
+
+func MapSupplierContractResponse(contract *entities.Contract) (*responses.SupplierContractResponse, error) {
+
+	stock, err := contract.CalCableStock()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &responses.SupplierContractResponse{
+		Id:          contract.Id,
+		UniqueName:  contract.UniqueName,
+		CableAmount: contract.CableAmount,
+		Stock:       stock,
+		StartDay:    contract.StartDay.UTC(),
+		EndDay:      contract.EndDay.UTC(),
+		CreatedAt:   contract.CreatedAt.UTC(),
+	}
+
+	return response, nil
+}

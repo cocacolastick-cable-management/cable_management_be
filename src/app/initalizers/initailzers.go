@@ -5,6 +5,7 @@ import (
 	"github.com/cable_management/cable_management_be/src/app/controllers/admin_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/common_controllers"
 	"github.com/cable_management/cable_management_be/src/app/controllers/planner_controller"
+	"github.com/cable_management/cable_management_be/src/app/controllers/supplier_controllers"
 	"github.com/cable_management/cable_management_be/src/app/middlewares"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
 	"github.com/cable_management/cable_management_be/src/domain/contracts/email"
@@ -14,6 +15,7 @@ import (
 	"github.com/cable_management/cable_management_be/src/features/usecases/admin_usecases"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
 	"github.com/cable_management/cable_management_be/src/features/usecases/planner_usecases"
+	"github.com/cable_management/cable_management_be/src/features/usecases/supplier_usecases"
 	featValidations "github.com/cable_management/cable_management_be/src/features/validations"
 	"github.com/cable_management/cable_management_be/src/infra/db"
 	implRepositories "github.com/cable_management/cable_management_be/src/infra/db/repositories"
@@ -66,6 +68,9 @@ var (
 	CreateWithDrawCase  planner_usecases.ICreateWithDrawCase
 	GetWithDrawListCase planner_usecases.IGetWithDrawListCase
 
+	//supplier_usecase
+	SupplierGetContractListCase supplier_usecases.IGetContractListCase
+
 	//common_controllers
 	AuthController           common_controllers.IAuthController
 	CommonUserControllers    common_controllers.IUserController
@@ -77,6 +82,9 @@ var (
 	//planner_controller
 	ContractController planner_controller.IContractController
 	WithDrawController planner_controller.IWithDrawController
+
+	//supplier_controller
+	SupplierContractController supplier_controllers.IContractController
 
 	//middleware
 	AuthorizedMiddleware middlewares.IAuthorizedMiddleware
@@ -130,6 +138,9 @@ func init() {
 	CreateWithDrawCase = planner_usecases.NewCreateWithDrawCase(WithDrawReqFac, WithDrawReqRepo, WithDrawReqHisRepo, ContractRepo, MakeSureAuthorized, Validator, EmailHelper)
 	GetWithDrawListCase = planner_usecases.NewGetWithDrawListCase(MakeSureAuthorized, WithDrawReqRepo)
 
+	//supplier_usecase
+	SupplierGetContractListCase = supplier_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized)
+
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
 	CommonUserControllers = common_controllers.NewUserController(GetUserListCase)
@@ -141,6 +152,9 @@ func init() {
 	//planner_controllers
 	ContractController = planner_controller.NewContractController(GetContractListCase)
 	WithDrawController = planner_controller.NewWithDrawController(CreateWithDrawCase, GetWithDrawListCase)
+
+	//supplier_controller
+	SupplierContractController = supplier_controllers.NewContractController(SupplierGetContractListCase)
 
 	//middleware
 	AuthorizedMiddleware = middlewares.NewAuthorizeMiddleware(AuthTokenService)

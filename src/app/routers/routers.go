@@ -13,10 +13,11 @@ func MountApiRouters(app *fiber.App) {
 
 	app.Use(cors.New())
 
-	api := app.Group("api/")
+	api := app.Group("/api")
 
 	// common
 	common := api.Group("/common")
+
 	common.Post("/sign-in",
 		middlewares.BodyParserMiddleware[requests.SignInRequest],
 		initalizers.AuthController.SignIn,
@@ -32,8 +33,6 @@ func MountApiRouters(app *fiber.App) {
 		initalizers.CommonWithDrawController.UpdateWithDrawStatusCase)
 	// change password
 	// reset password
-	
-	common.Use(middlewares.GlobalErrorHandleMiddleware)
 
 	// admin
 	admin := api.Group("/admin", initalizers.AuthorizedMiddleware.Handle(constants.AdminRole))
@@ -43,8 +42,6 @@ func MountApiRouters(app *fiber.App) {
 		initalizers.AdminUserController.CreateUser) // should generate password
 
 	//TODO: disable account
-
-	admin.Use(middlewares.GlobalErrorHandleMiddleware)
 
 	// planner
 	planner := api.Group("/planner", initalizers.AuthorizedMiddleware.Handle(constants.PlannerRole))
@@ -62,10 +59,13 @@ func MountApiRouters(app *fiber.App) {
 
 	// TODO notification
 
-	// TODO supplier
-	// TODO get my contracts
+	// supplier
+	supplier := api.Group("/supplier",
+		initalizers.AuthorizedMiddleware.Handle(constants.SupplierRole))
+
+	supplier.Get("/contracts",
+		initalizers.SupplierContractController.GetContractList)
 	// TODO get my with draw requests
-	// TODO update with draw request to ready
 	// TODO notification
 
 	// TODO contractor
@@ -73,5 +73,5 @@ func MountApiRouters(app *fiber.App) {
 	// TODO update with draw request to collected
 	// TODO notification
 
-	planner.Use(middlewares.GlobalErrorHandleMiddleware)
+	api.Use(middlewares.GlobalErrorHandleMiddleware)
 }
