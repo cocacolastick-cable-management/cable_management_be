@@ -65,12 +65,13 @@ func MountApiRouters(app *fiber.App) {
 
 	supplier.Get("/contracts",
 		initalizers.SupplierContractController.GetContractList)
-	// TODO get my with draw requests
+
+	supplier.Get("/with-draws",
+		initalizers.SupplierWithDrawController.GetWithDrawList)
 	// TODO notification
 
 	// TODO contractor
 	// TODO get my with draw requests
-	// TODO update with draw request to collected
 	// TODO notification
 
 	api.Use(middlewares.GlobalErrorHandleMiddleware)

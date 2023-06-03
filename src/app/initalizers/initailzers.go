@@ -70,6 +70,7 @@ var (
 
 	//supplier_usecase
 	SupplierGetContractListCase supplier_usecases.IGetContractListCase
+	SupplierGetWithDrawListCase supplier_usecases.IGetWithDrawListCase
 
 	//common_controllers
 	AuthController           common_controllers.IAuthController
@@ -85,6 +86,7 @@ var (
 
 	//supplier_controller
 	SupplierContractController supplier_controllers.IContractController
+	SupplierWithDrawController supplier_controllers.IWithDrawController
 
 	//middleware
 	AuthorizedMiddleware middlewares.IAuthorizedMiddleware
@@ -140,6 +142,7 @@ func init() {
 
 	//supplier_usecase
 	SupplierGetContractListCase = supplier_usecases.NewGetContractListCase(ContractRepo, MakeSureAuthorized)
+	SupplierGetWithDrawListCase = supplier_usecases.NewGetWithDrawListCase(MakeSureAuthorized, WithDrawReqRepo)
 
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
@@ -155,6 +158,7 @@ func init() {
 
 	//supplier_controller
 	SupplierContractController = supplier_controllers.NewContractController(SupplierGetContractListCase)
+	SupplierWithDrawController = supplier_controllers.NewWithDrawController(SupplierGetWithDrawListCase)
 
 	//middleware
 	AuthorizedMiddleware = middlewares.NewAuthorizeMiddleware(AuthTokenService)
