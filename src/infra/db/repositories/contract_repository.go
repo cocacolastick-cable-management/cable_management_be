@@ -48,17 +48,21 @@ func (cr ContractRepository) FindByUniqueName(uniqueName string, withs []string)
 	return matchingContract, nil
 }
 
-func (cr ContractRepository) GetList(withs []string) ([]*entities.Contract, error) {
+func (cr ContractRepository) GetActiveList(withs []string) ([]*entities.Contract, error) {
 
 	var contractList []*entities.Contract
 	query := cr.db
 
 	for _, with := range withs {
+		if with == "Supplier" {
+			continue
+		}
 		query = query.Preload(with)
 	}
 
-	query.Find(&contractList)
-
+	query.
+		InnerJoins("Supplier", cr.db.Where(&entities.User{IsActive: true})).
+		Find(&contractList)
 	return contractList, nil
 }
 

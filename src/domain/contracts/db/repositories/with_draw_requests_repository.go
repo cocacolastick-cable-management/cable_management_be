@@ -8,5 +8,5 @@ import (
 type IWithDrawRequestRepository interface {
 	Insert(withDrawRequest *entities.WithDrawRequest) error
 	FindById(id uuid.UUID, withs []string) (*entities.WithDrawRequest, error)
-	GetList(withs []string) ([]*entities.WithDrawRequest, error)
+	GetActiveList(withs []string) ([]*entities.WithDrawRequest, error)
 }

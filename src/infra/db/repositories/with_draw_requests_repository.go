@@ -32,7 +32,7 @@ func (cr WithDrawRequestRepository) FindById(id uuid.UUID, withs []string) (*ent
 	return matchingWithDrawRequest, nil
 }
 
-func (cr WithDrawRequestRepository) GetList(withs []string) ([]*entities.WithDrawRequest, error) {
+func (cr WithDrawRequestRepository) GetActiveList(withs []string) ([]*entities.WithDrawRequest, error) {
 
 	var withDrawReqList []*entities.WithDrawRequest
 	query := db.DB
@@ -41,7 +41,10 @@ func (cr WithDrawRequestRepository) GetList(withs []string) ([]*entities.WithDra
 		query = query.Preload(with)
 	}
 
-	query.Find(&withDrawReqList)
+	query.
+		InnerJoins("Contract").
+		InnerJoins("Contract.Supplier", cr.db.Where(&entities.User{IsActive: true})).
+		Find(&withDrawReqList)
 
 	return withDrawReqList, nil
 }
