@@ -54,8 +54,9 @@ var (
 	MakeSureAuthorized helpers.IMakeSureAuthorized
 
 	//common_usecases
-	SignInCase      common_usecases.ISignInCase
-	GetUserListCase common_usecases.IGetUserListCase
+	SignInCase               common_usecases.ISignInCase
+	GetUserListCase          common_usecases.IGetUserListCase
+	UpdateWithDrawStatusCase common_usecases.IUpdateWithDrawStatusCase
 
 	//admin_usecases
 	CreateUserCase admin_usecases.ICreateUserCase
@@ -66,8 +67,9 @@ var (
 	GetWithDrawListCase planner_usecases.IGetWithDrawListCase
 
 	//common_controllers
-	AuthController        common_controllers.IAuthController
-	CommonUserControllers common_controllers.IUserController
+	AuthController           common_controllers.IAuthController
+	CommonUserControllers    common_controllers.IUserController
+	CommonWithDrawController common_controllers.IWithDrawController
 
 	//admin_controllers
 	AdminUserController admin_controllers.IUserController
@@ -118,6 +120,7 @@ func init() {
 	//common_usecases
 	SignInCase = common_usecases.NewSignInCase(UserRepo, PasswordService, AuthTokenService, Validator)
 	GetUserListCase = common_usecases.NewGetUserListCase(Validator, UserRepo, MakeSureAuthorized)
+	UpdateWithDrawStatusCase = common_usecases.NewUpdateWithDrawStatusCase(MakeSureAuthorized, Validator, WithDrawReqRepo, WithDrawReqHisRepo)
 
 	//admin_usecases
 	CreateUserCase = admin_usecases.NewCreateUserCase(AuthTokenService, UserFac, UserRepo, Validator, MakeSureAuthorized, PasswordService, EmailService)
@@ -130,6 +133,7 @@ func init() {
 	//common_controllers
 	AuthController = common_controllers.NewAuthController(SignInCase)
 	CommonUserControllers = common_controllers.NewUserController(GetUserListCase)
+	CommonWithDrawController = common_controllers.NewWithDrawController(UpdateWithDrawStatusCase)
 
 	//admin_controllers
 	AdminUserController = admin_controllers.NewUserController(CreateUserCase)

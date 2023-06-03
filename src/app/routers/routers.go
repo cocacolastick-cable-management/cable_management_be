@@ -26,7 +26,12 @@ func MountApiRouters(app *fiber.App) {
 		initalizers.AuthorizedMiddleware.Handle(constants.AdminRole, constants.PlannerRole),
 		initalizers.CommonUserControllers.GetUserList)
 
+	common.Patch("/with-draws/:id",
+		initalizers.AuthorizedMiddleware.Handle(constants.AdminRole, constants.PlannerRole),
+		middlewares.BodyParserMiddleware[requests.UpdateWithDrawStatusRequest],
+		initalizers.CommonWithDrawController.UpdateWithDrawStatusCase)
 	// change password
+	// reset password
 
 	// admin
 	admin := api.Group("/admin", initalizers.AuthorizedMiddleware.Handle(constants.AdminRole))
@@ -35,7 +40,7 @@ func MountApiRouters(app *fiber.App) {
 		middlewares.BodyParserMiddleware[requests.CreateUserRequest],
 		initalizers.AdminUserController.CreateUser) // should generate password
 
-	//feat: disable account instead of remove it
+	//TODO: disable account
 
 	admin.Use(middlewares.GlobalErrorHandleMiddleware)
 
@@ -48,21 +53,23 @@ func MountApiRouters(app *fiber.App) {
 	planner.Get("/with-draws",
 		initalizers.WithDrawController.GetWithDrawList)
 
+	//TODO: need to send realtime noti
 	planner.Post("/with-draws",
 		middlewares.BodyParserMiddleware[requests.CreateWithDrawRequest],
 		initalizers.WithDrawController.CreateWithDrawRequest)
-	// get supplier list
-	// get contractor list
-	// cancel requests
 
-	// supplier
-	// get my contracts
-	// get my with draw requests
-	// update with draw request to ready
+	// TODO notification
 
-	// contractor
-	// get my with draw requests
-	// update with draw request to collected
+	// TODO supplier
+	// TODO get my contracts
+	// TODO get my with draw requests
+	// TODO update with draw request to ready
+	// TODO notification
+
+	// TODO contractor
+	// TODO get my with draw requests
+	// TODO update with draw request to collected
+	// TODO notification
 
 	planner.Use(middlewares.GlobalErrorHandleMiddleware)
 }

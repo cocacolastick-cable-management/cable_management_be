@@ -16,6 +16,7 @@ var (
 
 	ErrNotFoundContract   = errors.New("not found contract")
 	ErrNotFoundContractor = errors.New("not found contractor")
+	ErrNotFound           = errors.New("not found")
 
 	ErrNotIncludeRelationship = errors.New("not include relationship")
 )
