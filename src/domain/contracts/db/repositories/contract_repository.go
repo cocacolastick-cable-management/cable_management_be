@@ -10,4 +10,5 @@ type IContractRepository interface {
 	FindById(id uuid.UUID, withs []string) (*entities.Contract, error)
 	FindByUniqueName(uniqueName string, withs []string) (*entities.Contract, error)
 	GetActiveList(withs []string) ([]*entities.Contract, error)
+	FindManyBySupplierId(supplierId uuid.UUID, withs []string) ([]*entities.Contract, error)
 }

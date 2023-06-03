@@ -70,3 +70,16 @@ func (cr ContractRepository) Insert(contract *entities.Contract) error {
 	result := cr.db.Create(contract)
 	return result.Error
 }
+
+func (cr ContractRepository) FindManyBySupplierId(supplierId uuid.UUID, withs []string) ([]*entities.Contract, error) {
+
+	var contractList []*entities.Contract
+	query := cr.db
+
+	for _, with := range withs {
+		query = query.Preload(with)
+	}
+
+	query.Find(&contractList, "contracts.id = ?", supplierId)
+	return contractList, nil
+}
