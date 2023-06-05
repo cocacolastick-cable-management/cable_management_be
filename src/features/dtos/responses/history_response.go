@@ -6,6 +6,8 @@ import (
 )
 
 type HistoryResponse struct {
+	Id           uuid.UUID
+	RequestId    uuid.UUID
 	CreatorId    uuid.UUID
 	CreatorName  string
 	CreatorEmail string

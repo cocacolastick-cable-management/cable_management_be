@@ -22,7 +22,7 @@ func (e EmailService) SendEmailNewUser(role string, email string, password strin
 	err := e.emailHelper.SendEmail(&emailCont.EmailData{
 		To:      email,
 		Subject: "Your Account",
-		Body:    fmt.Sprintf("\n role: %v \n email: %v \n password: %v \n", role, email, password),
+		Body:    fmt.Sprintf("\n role: %v \n email: %v \n password: %v\n", role, email, password),
 	})
 
 	return err

@@ -9,6 +9,7 @@ type WithDrawRequest struct {
 	AbstractEntity
 
 	Status      string `gorm:"type:varchar"`
+	Counter     uint   `gorm:"autoIncrement"`
 	CableAmount uint
 	CreatedAt   time.Time
 

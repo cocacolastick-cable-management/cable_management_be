@@ -27,9 +27,9 @@ func (uf UserFactory) CreateUser(role, displayName, email, password string) (*en
 		return nil, errs.ErrInvalidRole
 	}
 
-	if !validations.ValidatePassword(password) {
-		return nil, errs.ErrInvalidPasswordFormat
-	}
+	//if !validations.ValidatePassword(password) {
+	//	return nil, errs.ErrInvalidPasswordFormat
+	//}
 
 	matchingUser, _ := uf.userRepo.FindByEmail(email)
 	if matchingUser != nil {

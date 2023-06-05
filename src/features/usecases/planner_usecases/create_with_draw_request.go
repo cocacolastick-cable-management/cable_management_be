@@ -24,10 +24,12 @@ type CreateWithDrawCase struct {
 	makeSureAuthorized helpers.IMakeSureAuthorized
 	validator          *validator.Validate
 	emailHelper        email.IEmailHelper
+	notifiRepo         repositories.INotificationRepository
+	notifFac           services.INotifFactory
 }
 
-func NewCreateWithDrawCase(withDrawFac services.IWithDrawRequestFactory, withDrawRepo repositories.IWithDrawRequestRepository, historyRepo repositories.IWithDrawRequestHistoryRepository, contractRepo repositories.IContractRepository, makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate, emailHelper email.IEmailHelper) *CreateWithDrawCase {
-	return &CreateWithDrawCase{withDrawFac: withDrawFac, withDrawRepo: withDrawRepo, historyRepo: historyRepo, contractRepo: contractRepo, makeSureAuthorized: makeSureAuthorized, validator: validator, emailHelper: emailHelper}
+func NewCreateWithDrawCase(withDrawFac services.IWithDrawRequestFactory, withDrawRepo repositories.IWithDrawRequestRepository, historyRepo repositories.IWithDrawRequestHistoryRepository, contractRepo repositories.IContractRepository, makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate, emailHelper email.IEmailHelper, notifiRepo repositories.INotificationRepository, notifFac services.INotifFactory) *CreateWithDrawCase {
+	return &CreateWithDrawCase{withDrawFac: withDrawFac, withDrawRepo: withDrawRepo, historyRepo: historyRepo, contractRepo: contractRepo, makeSureAuthorized: makeSureAuthorized, validator: validator, emailHelper: emailHelper, notifiRepo: notifiRepo, notifFac: notifFac}
 }
 
 func (cwd CreateWithDrawCase) Handle(accessToken string, request requests.CreateWithDrawRequest) (*responses.WithDrawResponse, error) {
@@ -48,16 +50,16 @@ func (cwd CreateWithDrawCase) Handle(accessToken string, request requests.Create
 	newWithDraw, _ := cwd.withDrawFac.CreateRequest(request.CableAmount, request.ContractUniqueName, request.ContractorEmail)
 	//TODO should I create a WithDrawRequestFactory?
 	newHistory := entities.NewWithDrawRequestHistory(constants.WD_CreateAction, newWithDraw.CreatedAt, newWithDraw.Status, claims.AccountId, newWithDraw.Id)
+
 	_ = cwd.withDrawRepo.Insert(newWithDraw)
 	_ = cwd.historyRepo.Insert(newHistory)
 
-	//go func() {
-	//	_ = cwd.emailHelper.SendEmail(&email.EmailData{
-	//		To:      "vuu@yopmail.com",
-	//		Subject: "hello",
-	//		Body:    "you stupid as fuck",
-	//	})
-	//}()
+	go func() {
+		notifList, _ := cwd.notifFac.CreateNotifList(claims.AccountId, constants.WD_CreateAction, constants.WithDrawReqObjectType, newWithDraw.Id)
+		_ = cwd.notifiRepo.InsertMany(notifList)
+	}()
+
+	//TODO send email
 
 	newWithDraw, _ = cwd.withDrawRepo.FindById(newWithDraw.Id, []string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
 

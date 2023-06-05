@@ -7,6 +7,7 @@ import (
 
 type WithDrawResponse struct {
 	Id                 uuid.UUID
+	UniqueName         string
 	SupplierId         uuid.UUID
 	SupplierName       string
 	SupplierEmail      string

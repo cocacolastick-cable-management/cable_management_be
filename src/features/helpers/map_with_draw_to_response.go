@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"github.com/cable_management/cable_management_be/src/domain/entities"
 	"github.com/cable_management/cable_management_be/src/domain/errs"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
@@ -19,6 +20,7 @@ func MapWithDrawToResponse(withDraw *entities.WithDrawRequest) (*responses.WithD
 
 	return &responses.WithDrawResponse{
 		Id:                 withDraw.Id,
+		UniqueName:         fmt.Sprintf("with-draw-1-%v", withDraw.Counter),
 		SupplierId:         withDraw.Contract.SupplierId,
 		SupplierName:       withDraw.Contract.Supplier.DisplayName,
 		SupplierEmail:      withDraw.Contract.Supplier.Email,

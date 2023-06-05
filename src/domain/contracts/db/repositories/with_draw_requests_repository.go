@@ -11,4 +11,5 @@ type IWithDrawRequestRepository interface {
 	FindById(id uuid.UUID, withs []string) (*entities.WithDrawRequest, error)
 	GetActiveList(withs []string) ([]*entities.WithDrawRequest, error)
 	FindManyBySupplierId(supplierId uuid.UUID, withs []string) ([]*entities.WithDrawRequest, error)
+	FindManyByContractorId(contractorId uuid.UUID, withs []string) ([]*entities.WithDrawRequest, error)
 }

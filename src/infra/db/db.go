@@ -44,7 +44,7 @@ func Init() {
 
 	DB = DB.Debug()
 
-	err = DB.AutoMigrate(&entities.User{}, &entities.Contract{}, entities.WithDrawRequest{}, entities.WithDrawRequestHistory{})
+	err = DB.AutoMigrate(&entities.User{}, &entities.Contract{}, entities.WithDrawRequest{}, entities.WithDrawRequestHistory{}, &entities.Notification{})
 	if err != nil {
 		panic(err)
 		return

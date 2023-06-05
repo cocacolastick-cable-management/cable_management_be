@@ -76,3 +76,20 @@ func (cr WithDrawRequestRepository) FindManyBySupplierId(supplierId uuid.UUID, w
 
 	return withDrawReqList, nil
 }
+
+func (cr WithDrawRequestRepository) FindManyByContractorId(contractorId uuid.UUID, withs []string) ([]*entities.WithDrawRequest, error) {
+
+	var withDrawReqList []*entities.WithDrawRequest
+	query := db.DB
+
+	for _, with := range withs {
+		query = query.Preload(with)
+	}
+
+	query.
+		InnerJoins("Contract").
+		InnerJoins("Contractor", cr.db.Where(&entities.User{AbstractEntity: entities.AbstractEntity{Id: contractorId}, Role: constants.ContractorRole})).
+		Find(&withDrawReqList)
+
+	return withDrawReqList, nil
+}

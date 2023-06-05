@@ -1,10 +1,10 @@
 package common_controllers
 
 import (
-	"github.com/cable_management/cable_management_be/src/app/utils"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
+	"github.com/cable_management/cable_management_be/src/infra/http/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"errors"
-	"github.com/cable_management/cable_management_be/src/app/utils"
 	"github.com/cable_management/cable_management_be/src/domain/errs"
+	"github.com/cable_management/cable_management_be/src/infra/http/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )

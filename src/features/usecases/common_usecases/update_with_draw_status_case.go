@@ -5,7 +5,9 @@ import (
 	"github.com/cable_management/cable_management_be/src/domain/contracts/db/repositories"
 	"github.com/cable_management/cable_management_be/src/domain/entities"
 	"github.com/cable_management/cable_management_be/src/domain/errs"
+	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/helpers"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -13,7 +15,7 @@ import (
 )
 
 type IUpdateWithDrawStatusCase interface {
-	Handle(accessToken string, withDrawId uuid.UUID, request requests.UpdateWithDrawStatusRequest) error
+	Handle(accessToken string, withDrawId uuid.UUID, request requests.UpdateWithDrawStatusRequest) (*responses.WithDrawResponse, error)
 }
 
 type UpdateWithDrawStatusCase struct {
@@ -21,25 +23,27 @@ type UpdateWithDrawStatusCase struct {
 	validator          *validator.Validate
 	withDrawRepo       repositories.IWithDrawRequestRepository
 	historyRepo        repositories.IWithDrawRequestHistoryRepository
+	notifRepo          repositories.INotificationRepository
+	notifFac           services.INotifFactory
 }
 
-func NewUpdateWithDrawStatusCase(makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate, withDrawRepo repositories.IWithDrawRequestRepository, historyRepo repositories.IWithDrawRequestHistoryRepository) *UpdateWithDrawStatusCase {
-	return &UpdateWithDrawStatusCase{makeSureAuthorized: makeSureAuthorized, validator: validator, withDrawRepo: withDrawRepo, historyRepo: historyRepo}
+func NewUpdateWithDrawStatusCase(makeSureAuthorized helpers.IMakeSureAuthorized, validator *validator.Validate, withDrawRepo repositories.IWithDrawRequestRepository, historyRepo repositories.IWithDrawRequestHistoryRepository, notifRepo repositories.INotificationRepository, notifFac services.INotifFactory) *UpdateWithDrawStatusCase {
+	return &UpdateWithDrawStatusCase{makeSureAuthorized: makeSureAuthorized, validator: validator, withDrawRepo: withDrawRepo, historyRepo: historyRepo, notifRepo: notifRepo, notifFac: notifFac}
 }
 
-func (uws UpdateWithDrawStatusCase) Handle(accessToken string, withDrawId uuid.UUID, request requests.UpdateWithDrawStatusRequest) error {
+func (uws UpdateWithDrawStatusCase) Handle(accessToken string, withDrawId uuid.UUID, request requests.UpdateWithDrawStatusRequest) (*responses.WithDrawResponse, error) {
 
 	claims, err := uws.makeSureAuthorized.Handle(accessToken, constants.SupplierRole, constants.PlannerRole, constants.ContractorRole)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	matchWithDraw, err := uws.withDrawRepo.FindById(withDrawId, nil)
+	matchWithDraw, err := uws.withDrawRepo.FindById(withDrawId, []string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
 	if err != nil {
-		return errs.ErrNotFound
+		return nil, errs.ErrNotFound
 	}
 
-	//TODO validate request
+	// TODO validate request
 
 	action := ""
 	switch {
@@ -53,14 +57,25 @@ func (uws UpdateWithDrawStatusCase) Handle(accessToken string, withDrawId uuid.U
 		action = constants.WD_UpdateAction
 		break
 	default:
-		return errs.ErrUnAuthorized
+		response, _ := helpers.MapWithDrawToResponse(matchWithDraw)
+		return response, errs.ErrUnAuthorized
 	}
 
 	matchWithDraw.Status = request.NewStatus
 	history := entities.NewWithDrawRequestHistory(action, time.Now(), request.NewStatus, claims.AccountId, matchWithDraw.Id)
+	matchWithDraw.Histories = append(matchWithDraw.Histories, history)
 
 	_ = uws.withDrawRepo.Save(matchWithDraw)
-	_ = uws.historyRepo.Insert(history)
 
-	return nil
+	go func() {
+		notifList, _ := uws.notifFac.CreateNotifList(claims.AccountId, action, constants.WithDrawReqObjectType, matchWithDraw.Id)
+		_ = uws.notifRepo.InsertMany(notifList)
+	}()
+
+	// TODO send email
+
+	matchWithDraw, _ = uws.withDrawRepo.FindById(withDrawId, []string{"Histories", "Histories.Creator", "Contract", "Contract.Supplier", "Contractor"})
+
+	response, _ := helpers.MapWithDrawToResponse(matchWithDraw)
+	return response, nil
 }

@@ -69,3 +69,14 @@ func (ur UserRepository) FindManyByRoles(roles []string, withs []string) ([]*ent
 	query.Find(&userList, "users.role IN ?", roles)
 	return userList, nil
 }
+
+func (ur UserRepository) FindManyActiveByRoles(roles []string, withs []string) ([]*entities.User, error) {
+
+	var userList []*entities.User
+	query := ur.db
+	for _, with := range withs {
+		query = query.Preload(with)
+	}
+	query.Find(&userList, "users.role IN ? AND users.is_active = ?", roles, true)
+	return userList, nil
+}

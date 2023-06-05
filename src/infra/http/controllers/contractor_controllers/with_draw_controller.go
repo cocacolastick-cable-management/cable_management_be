@@ -1,10 +1,10 @@
-package supplier_controllers
+package contractor_controllers
 
 import (
-	"github.com/cable_management/cable_management_be/src/app/utils"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
-	"github.com/cable_management/cable_management_be/src/features/usecases/supplier_usecases"
+	"github.com/cable_management/cable_management_be/src/features/usecases/contractor_usecases"
+	"github.com/cable_management/cable_management_be/src/infra/http/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,10 +13,10 @@ type IWithDrawController interface {
 }
 
 type WithDrawController struct {
-	getWithDrawListCase supplier_usecases.IGetWithDrawListCase
+	getWithDrawListCase contractor_usecases.IGetWithDrawListCase
 }
 
-func NewWithDrawController(getWithDrawListCase supplier_usecases.IGetWithDrawListCase) *WithDrawController {
+func NewWithDrawController(getWithDrawListCase contractor_usecases.IGetWithDrawListCase) *WithDrawController {
 	return &WithDrawController{getWithDrawListCase: getWithDrawListCase}
 }
 

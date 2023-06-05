@@ -2,9 +2,9 @@ package routers
 
 import (
 	"github.com/cable_management/cable_management_be/src/app/initalizers"
-	"github.com/cable_management/cable_management_be/src/app/middlewares"
 	"github.com/cable_management/cable_management_be/src/domain/constants"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/infra/http/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -12,6 +12,21 @@ import (
 func MountApiRouters(app *fiber.App) {
 
 	app.Use(cors.New())
+
+	//sse := app.Group("/sse")
+	//
+	//sse.Get("/connection", initalizers.SseServer.HandleSSE)
+
+	//go func() {
+	//	//time.Sleep(5 * time.Second)
+	//	for {
+	//		time.Sleep(2 * time.Second)
+	//
+	//		// Example of sending a message to a specific client
+	//		message := time.Now().Format("2006-01-02 15:04:05")
+	//		initalizers.SseServer.SendMessage(message)
+	//	}
+	//}()
 
 	api := app.Group("/api")
 
@@ -28,7 +43,7 @@ func MountApiRouters(app *fiber.App) {
 		initalizers.CommonUserControllers.GetUserList)
 
 	common.Patch("/with-draws/:id",
-		initalizers.AuthorizedMiddleware.Handle(constants.AdminRole, constants.PlannerRole),
+		initalizers.AuthorizedMiddleware.Handle(constants.PlannerRole, constants.SupplierRole, constants.ContractorRole),
 		middlewares.BodyParserMiddleware[requests.UpdateWithDrawStatusRequest],
 		initalizers.CommonWithDrawController.UpdateWithDrawStatusCase)
 	// change password
@@ -57,8 +72,6 @@ func MountApiRouters(app *fiber.App) {
 		middlewares.BodyParserMiddleware[requests.CreateWithDrawRequest],
 		initalizers.WithDrawController.CreateWithDrawRequest)
 
-	// TODO notification
-
 	// supplier
 	supplier := api.Group("/supplier",
 		initalizers.AuthorizedMiddleware.Handle(constants.SupplierRole))
@@ -68,11 +81,12 @@ func MountApiRouters(app *fiber.App) {
 
 	supplier.Get("/with-draws",
 		initalizers.SupplierWithDrawController.GetWithDrawList)
-	// TODO notification
 
-	// TODO contractor
-	// TODO get my with draw requests
-	// TODO notification
+	contractor := api.Group("/contractor",
+		initalizers.AuthorizedMiddleware.Handle(constants.ContractorRole))
+
+	contractor.Get("/with-draws",
+		initalizers.ContractorWithDrawController.GetWithDrawList)
 
 	api.Use(middlewares.GlobalErrorHandleMiddleware)
 }

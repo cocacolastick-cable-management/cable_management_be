@@ -35,7 +35,7 @@ func (gul GetUserListCase) Handle(accessToken string, request requests.GetUserLi
 	//	request.Roles = slices.(request.Roles)
 	//}
 
-	userList, _ := gul.userRepo.FindManyByRoles(request.Roles, nil)
+	userList, _ := gul.userRepo.FindManyByRoles(request.Roles, []string{"User"})
 
 	response := make([]*responses.UserResponse, len(userList))
 	for i, user := range userList {

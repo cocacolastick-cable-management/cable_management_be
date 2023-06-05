@@ -54,9 +54,6 @@ func (cr ContractRepository) GetActiveList(withs []string) ([]*entities.Contract
 	query := cr.db
 
 	for _, with := range withs {
-		if with == "Supplier" {
-			continue
-		}
 		query = query.Preload(with)
 	}
 

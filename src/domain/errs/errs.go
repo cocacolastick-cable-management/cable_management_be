@@ -13,10 +13,13 @@ var (
 	ErrInvalidRole           = errors.New("invalid role")
 	ErrInvalidPasswordFormat = errors.New("invalid Password format")
 	ErrInvalidCableAmount    = errors.New("invalid cable amount")
+	ErrInvalidObjectType     = errors.New("invalid object type")
 
 	ErrNotFoundContract   = errors.New("not found contract")
 	ErrNotFoundContractor = errors.New("not found contractor")
+	ErrNotFoundWithDraw   = errors.New("not found contractor")
 	ErrNotFound           = errors.New("not found")
+	ErrNotFoundUser       = errors.New("not found")
 
 	ErrNotIncludeRelationship = errors.New("not include relationship")
 )

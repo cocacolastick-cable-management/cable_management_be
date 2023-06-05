@@ -13,6 +13,8 @@ type User struct {
 	Role         string `gorm:"uniqueIndex:uni_user;type:varchar"`
 	IsActive     bool   `gorm:"type:boolean"`
 	CreatedAt    time.Time
+
+	NotifList []*Notification `gorm:"foreignKey:ReceiverId"`
 }
 
 func NewUser(role, displayName, email, passwordHash string, isActive bool, createdAt time.Time) *User {

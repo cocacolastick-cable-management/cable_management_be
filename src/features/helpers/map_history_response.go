@@ -13,6 +13,8 @@ func MapHistoryResponse(history *entities.WithDrawRequestHistory) (*responses.Hi
 	}
 
 	return &responses.HistoryResponse{
+		Id:           history.Id,
+		RequestId:    history.RequestId,
 		CreatorId:    history.CreatorId,
 		CreatorName:  history.Creator.DisplayName,
 		CreatorEmail: history.Creator.Email,

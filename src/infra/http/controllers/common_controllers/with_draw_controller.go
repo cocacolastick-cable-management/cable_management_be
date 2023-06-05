@@ -1,11 +1,13 @@
 package common_controllers
 
 import (
-	"github.com/cable_management/cable_management_be/src/app/utils"
+	"errors"
 	"github.com/cable_management/cable_management_be/src/domain/errs"
 	"github.com/cable_management/cable_management_be/src/domain/services"
 	"github.com/cable_management/cable_management_be/src/features/dtos/requests"
+	"github.com/cable_management/cable_management_be/src/features/dtos/responses"
 	"github.com/cable_management/cable_management_be/src/features/usecases/common_usecases"
+	"github.com/cable_management/cable_management_be/src/infra/http/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -38,11 +40,18 @@ func (w WithDrawController) UpdateWithDrawStatusCase(ctx *fiber.Ctx) error {
 		return ctx.Next()
 	}
 
-	err = w.updateWithDrawStatusCase.Handle(accessToken, withDrawId, request)
+	var withDrawRes *responses.WithDrawResponse
+	withDrawRes, err = w.updateWithDrawStatusCase.Handle(accessToken, withDrawId, request)
 
 	//check error
 	if err != nil {
-		//check for other cases before pass to global error handler
+		if errors.Is(err, errs.ErrUnAuthorized) && withDrawRes != nil {
+			return ctx.Status(400).JSON(utils.Response{
+				Message: "you can not update the current status",
+				Code:    "BP",
+				Payload: withDrawRes,
+			})
+		}
 		ctx.Locals("err", err)
 		return ctx.Next()
 	}
@@ -50,5 +59,6 @@ func (w WithDrawController) UpdateWithDrawStatusCase(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(utils.Response{
 		Message: "Success",
 		Code:    "OK",
+		Payload: withDrawRes,
 	})
 }
